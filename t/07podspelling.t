@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.16.%d', q$Rev: 2 $ =~ /\d+/gmx );
 use File::Spec::Functions qw(catdir catfile updir);
 use FindBin qw( $Bin );
 use lib catdir( $Bin, updir, q(lib) );
@@ -42,3 +42,5 @@ __DATA__
 peter
 flanigan
 File::Gettext
+Gettext
+gettext

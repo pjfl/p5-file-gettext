@@ -1,18 +1,21 @@
-# @(#)$Ident: Build.PL 2013-04-04 18:26 pjf ;
+# @(#)$Ident: Build.PL 2013-04-10 23:01 pjf ;
 
 use strict;
 use warnings;
 use inc::Bob; # Module::Build subclass
-use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.16.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 Bob->new( {
    module    => q(File::Gettext),
    home_page => q(http://www.roxsoft.co.uk),
    requires  => {
-      'perl'             => 5.010,
-      'version'          => 0.77,
-      'Class::Usul'      => q(0.12.0),
-      'File::DataClass'  => q(0.15.0),
+      'perl'                 => 5.010,
+      'namespace::autoclean' => 0.13,
+      'version'              => 0.77,
+      'Date::Format'         => 2.22,
+      'Encode'               => 2.12,
+      'File::DataClass'      => q(0.15.0),
+      'Moose'                => 2.0801,
    },
    recommends            => {
       'App::cpanminus'   => 1.6005,
@@ -23,8 +26,10 @@ Bob->new( {
       'version'          => 0.77,
       'Module::Build'    => 0.38, },
    build_requires        => {
+      'utf8'             => 1.06,
       'Exception::Class' => 1.23,
-      'Test::More'       => 0.74, },
+      'Test::More'       => 0.74,
+      'Text::Diff'       => 1.37, },
 } )->create_build_script; # Goal!
 
 # Local Variables:

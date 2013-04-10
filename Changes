@@ -1,4 +1,7 @@
-Revision history for 
+Revision history for File::Gettext
+
+0.16.2    2013-04-11 00:17:22
+          Imported code and tests from File::DataClass distribution
 
 0.1.1     2013-04-10 23:44:32
           Created initial project files
