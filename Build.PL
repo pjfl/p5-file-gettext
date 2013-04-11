@@ -1,9 +1,9 @@
-# @(#)$Ident: Build.PL 2013-04-10 23:01 pjf ;
+# @(#)$Ident: Build.PL 2013-04-11 14:39 pjf ;
 
 use strict;
 use warnings;
 use inc::Bob; # Module::Build subclass
-use version; our $VERSION = qv( sprintf '0.16.%d', q$Rev: 2 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.16.%d', q$Rev: 3 $ =~ /\d+/gmx );
 
 Bob->new( {
    module    => q(File::Gettext),
@@ -33,7 +33,7 @@ Bob->new( {
 } )->create_build_script; # Goal!
 
 # Local Variables:
-# eval: (load-project-state "File-Gettext")
+# eval: (load-project-state "file-gettext")
 # mode: perl
 # tab-title: File::Gettext
 # tab-width: 3
