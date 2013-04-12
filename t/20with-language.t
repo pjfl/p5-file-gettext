@@ -1,8 +1,8 @@
-# @(#)$Id: 76with-language.t 431 2013-04-01 01:11:58Z pjf $
+# @(#)$Ident: 20with-language.t 2013-04-11 17:45 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.15.%d', q$Rev: 432 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.16.%d', q$Rev: 433 $ =~ /\d+/gmx );
 use File::Spec::Functions;
 use FindBin qw( $Bin );
 use lib catdir( $Bin, updir, q(lib) );
@@ -36,10 +36,9 @@ sub test ($$$) {
    return $wantarray ? @{ $res } : $res;
 }
 
-use_ok( q(File::Gettext::Schema) );
-use_ok( q(File::Gettext) );
-
-use File::Gettext::Constants;
+use_ok 'File::Gettext';
+use_ok 'File::Gettext::Constants';
+use_ok 'File::Gettext::Schema';
 
 my $osname  = lc $OSNAME;
 my $ntfs    = $osname eq 'mswin32' || $osname eq 'cygwin' ? 1 : 0;
@@ -128,7 +127,7 @@ $res = test $rs, q(delete), $args;
 
 is $res, q(dummy), 'Deletes dummy element 2';
 
-done_testing();
+done_testing;
 
 # Cleanup
 
