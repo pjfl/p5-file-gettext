@@ -4,7 +4,7 @@ File::Gettext - Read and write GNU gettext po/mo files
 
 # Version
 
-This documents version v0.16.$Rev: 2 $ of [File::Gettext](https://metacpan.org/module/File::Gettext)
+This documents version v0.16.$Rev: 4 $ of [File::Gettext](https://metacpan.org/module/File::Gettext)
 
 # Synopsis
 
@@ -50,7 +50,7 @@ Larry Wall - For the Perl programming language
 
 # Author
 
-Peter Flanigan, `@ <Support at RoxSoft dot co dot uk>`
+Peter Flanigan, `<pjfl@cpan.org>`
 
 # License and Copyright
 

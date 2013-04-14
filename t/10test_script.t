@@ -1,8 +1,8 @@
-# @(#)$Ident: 10test_script.t 2013-04-10 23:05 pjf ;
+# @(#)$Ident: 10test_script.t 2013-04-13 21:50 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.16.%d', q$Rev: 2 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.16.%d', q$Rev: 4 $ =~ /\d+/gmx );
 use File::Spec::Functions;
 use FindBin qw( $Bin );
 use lib catdir( $Bin, updir, q(lib) );
@@ -49,6 +49,7 @@ $schema = File::Gettext->new( { path => $orig, tempdir => q(t) } );
 $data   = $schema->load;
 
 ok $data->{po}->{January}->{msgstr}->[ 0 ] eq 'Januar', 'PO message lookup';
+ok $data->{po}->{March}->{msgstr}->[ 0 ] eq 'März', 'PO charset decode';
 
 $orig   = catfile( qw(t existing.mo) );
 $schema = File::Gettext->new( {

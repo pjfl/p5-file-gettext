@@ -1,6 +1,6 @@
 Revision history for File::Gettext
 
-0.16.2    2013-04-11 00:17:22
+0.16.4    2013-04-14 16:18:36
           Fixed version number in t/20with-language.t
           Extracted Schema, ResultSource and Stroage classes from F::DC
           Imported code and tests from File::DataClass distribution

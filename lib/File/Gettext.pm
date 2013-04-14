@@ -4,7 +4,7 @@ package File::Gettext;
 
 use strict;
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.16.%d', q$Rev: 2 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.16.%d', q$Rev: 4 $ =~ /\d+/gmx );
 
 use English                      qw(-no_match_vars);
 use File::DataClass::Constants;
@@ -177,7 +177,7 @@ File::Gettext - Read and write GNU gettext po/mo files
 
 =head1 Version
 
-This documents version v0.16.$Rev: 2 $ of L<File::Gettext>
+This documents version v0.16.$Rev: 4 $ of L<File::Gettext>
 
 =head1 Synopsis
 
@@ -227,7 +227,7 @@ Larry Wall - For the Perl programming language
 
 =head1 Author
 
-Peter Flanigan, C<< @ <Support at RoxSoft dot co dot uk> >>
+Peter Flanigan, C<< <pjfl@cpan.org> >>
 
 =head1 License and Copyright
 
