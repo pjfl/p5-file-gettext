@@ -1,9 +1,9 @@
-# @(#)$Ident: Build.PL 2013-04-11 14:39 pjf ;
+# @(#)$Ident: Build.PL 2013-04-14 15:29 pjf ;
 
 use strict;
 use warnings;
 use inc::Bob; # Module::Build subclass
-use version; our $VERSION = qv( sprintf '0.16.%d', q$Rev: 3 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.16.%d', q$Rev: 5 $ =~ /\d+/gmx );
 
 Bob->new( {
    module    => q(File::Gettext),
@@ -14,7 +14,7 @@ Bob->new( {
       'version'              => 0.77,
       'Date::Format'         => 2.22,
       'Encode'               => 2.12,
-      'File::DataClass'      => q(0.15.0),
+      'File::DataClass'      => q(0.16.0),
       'Moose'                => 2.0801,
    },
    recommends            => {

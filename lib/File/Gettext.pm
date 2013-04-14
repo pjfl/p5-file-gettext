@@ -1,10 +1,10 @@
-# @(#)$Ident: Gettext.pm 2013-04-10 23:10 pjf ;
+# @(#)$Ident: Gettext.pm 2013-04-14 15:37 pjf ;
 
 package File::Gettext;
 
 use strict;
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.16.%d', q$Rev: 4 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.16.%d', q$Rev: 5 $ =~ /\d+/gmx );
 
 use English                      qw(-no_match_vars);
 use File::DataClass::Constants;
@@ -177,13 +177,20 @@ File::Gettext - Read and write GNU gettext po/mo files
 
 =head1 Version
 
-This documents version v0.16.$Rev: 4 $ of L<File::Gettext>
+This documents version v0.16.$Rev: 5 $ of L<File::Gettext>
 
 =head1 Synopsis
 
    use File::Gettext;
 
+   my $domain = File::Gettext->new( $attrs )->load( $lang, @names );
+
 =head1 Description
+
+Extends L<File::DataClass::Schema>. Provides for the reading and
+writing of GNU Gettext PO files and the reading of MO files. Used by
+L<Class::Usul::L10N> to translate application message strings into different
+languages
 
 =head1 Subroutines/Methods
 
@@ -201,11 +208,17 @@ Sets the I<path> attribute on the parent class from C<$lang> and C<$file>
 
 =head1 Configuration and Environment
 
+None
+
 =head1 Diagnostics
+
+None
 
 =head1 Dependencies
 
 =over 3
+
+=item L<File::DataClass>
 
 =item L<Moose>
 
