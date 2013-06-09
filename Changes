@@ -1,11 +1,14 @@
 Revision history for File::Gettext
 
+0.17.1    2013-06-09 15:13:07
+          - Deprecated DIRECTORIES use LOCALE_DIRS
+
 0.16.5    2013-04-14 16:38:11
-          Updated POD
-          Fixed version number in t/20with-language.t
-          Extracted Schema, ResultSource and Stroage classes from F::DC
-          Imported code and tests from File::DataClass distribution
+          - Updated POD
+          - Fixed version number in t/20with-language.t
+          - Extracted Schema, ResultSource and Stroage classes from F::DC
+          - Imported code and tests from File::DataClass distribution
 
 0.1.1     2013-04-10 23:44:32
-          Created initial project files
+          - Created initial project files
 

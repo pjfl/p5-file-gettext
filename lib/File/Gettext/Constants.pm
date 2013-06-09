@@ -1,15 +1,16 @@
-# @(#)$Ident: Constants.pm 2013-04-10 22:57 pjf ;
+# @(#)$Ident: Constants.pm 2013-06-09 14:11 pjf ;
 
 package File::Gettext::Constants;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.16.%d', q$Rev: 2 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.17.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 my @_constants;
 
 BEGIN {
-   @_constants = ( qw(CONTEXT_SEP DIRECTORIES MAGIC_N MAGIC_V PLURAL_SEP) );
+   @_constants = ( qw(CONTEXT_SEP DIRECTORIES LOCALE_DIRS MAGIC_N
+                      MAGIC_V PLURAL_SEP) );
 }
 
 use Sub::Exporter::Progressive -setup => {
@@ -20,7 +21,11 @@ sub CONTEXT_SEP () {
    return "\004";
 }
 
-sub DIRECTORIES () {
+sub DIRECTORIES () { # TODO: Deprecated
+   return LOCALE_DIRS();
+}
+
+sub LOCALE_DIRS () {
    return [ [ q(), qw(usr share locale) ],
             [ q(), qw(usr local share locale) ],
             [ q(), qw(usr lib locale) ] ];
@@ -50,7 +55,7 @@ File::Gettext::Constants - Definitions of constant values
 
 =head1 Version
 
-This documents version v0.16.$Rev: 2 $ of L<File::Gettext::Constants>
+This documents version v0.17.$Rev: 1 $ of L<File::Gettext::Constants>
 
 =head1 Synopsis
 
@@ -70,6 +75,8 @@ Character used to separate the context from the message id in a gettext
 .mo file
 
 =head2 DIRECTORIES
+
+=head2 LOCALE_DIRS
 
 List of default system directories the might contain a .mo file
 

@@ -4,7 +4,7 @@ package File::Gettext::ResultSource;
 
 use strict;
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.16.%d', q$Rev: 3 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.17.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Moose;
 
@@ -28,7 +28,7 @@ File::Gettext::ResultSource - Result source localisation
 
 =head1 Version
 
-0.16.$Revision: 3 $
+0.16.$Rev: 1 $
 
 =head1 Synopsis
 

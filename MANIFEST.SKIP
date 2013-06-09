@@ -33,6 +33,9 @@
 \bBuild.bat$
 \b_build
 
+# Avoid Dist::Zilla config file
+\bdist.ini$
+
 # Avoid Devel::Cover generated files
 \bcover_db
 
@@ -51,9 +54,10 @@
 #   Mac OSX SMB mount metadata files
 \B\._
 
-# Aviod other crap
+# Avoid other crap
 TAGS
 Thumbs.db
+\bipc_srlock
 
 # Avoid archives of this distribution
-\bFile-Gettext-[\d\.\_]+
+\bFile-Gettext-v?[\d\.\_]+
