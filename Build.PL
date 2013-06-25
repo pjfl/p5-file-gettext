@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 use inc::Bob; # Module::Build subclass
-use version; our $VERSION = qv( sprintf '0.18.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.18.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 Bob->new( {
    module    => q(File::Gettext),
@@ -14,7 +14,7 @@ Bob->new( {
       'Class::Method::ModifiersX::Augment' => 0.001,
       'Date::Format'               => 2.22,
       'Encode'                     => 2.12,
-      'File::DataClass'            => q(0.20.0),
+      'File::DataClass'            => q(0.21.0),
       'Moo'                        => 1.002,
       'Sub::Exporter::Progressive' => 0.001006,
       'Try::Tiny'                  => 0.09,
@@ -27,7 +27,7 @@ Bob->new( {
       'Module::Build'   => 0.4004, },
    build_requires       => {
       'version'         => 0.88,
-      'File::DataClass' => q(0.20.0),
+      'File::DataClass' => q(0.21.0),
       'Module::Build'   => 0.4004,
       'Text::Diff'      => 1.37, },
 } )->create_build_script; # Goal!
