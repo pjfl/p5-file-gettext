@@ -1,25 +1,24 @@
-# @(#)$Ident: Storage.pm 2013-04-11 17:08 pjf ;
+# @(#)$Ident: Storage.pm 2013-06-14 12:04 pjf ;
 
 package File::Gettext::Storage;
 
-use strict;
-use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.17.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use namespace::sweep;
+use version; our $VERSION = qv( sprintf '0.18.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
-use Moose;
-use File::Basename qw(basename);
+use File::Basename             qw( basename );
 use File::DataClass::Constants;
-use File::DataClass::Functions qw(is_stale merge_hash_data throw);
+use File::DataClass::Functions qw( is_stale merge_hash_data throw );
+use File::DataClass::Types     qw( Object );
 use File::Gettext;
+use Moo;
 use Try::Tiny;
 
-has 'gettext' => is => 'ro', isa => 'Object',  lazy => TRUE,
-   builder    => '_build_gettext';
+has 'gettext' => is => 'lazy', isa => Object;
 
-has 'schema'  => is => 'ro', isa => 'Object',  required => TRUE,
+has 'schema'  => is => 'ro',   isa => Object,  required => TRUE,
    handles    => [ qw(cache lang localedir) ], weak_ref => TRUE;
 
-has 'storage' => is => 'ro', isa => 'Object',  required => TRUE,
+has 'storage' => is => 'ro',   isa => Object,  required => TRUE,
    handles    => [ qw(extn meta_pack meta_unpack read_file txn_do
                       validate_params) ];
 
@@ -118,7 +117,6 @@ sub update {
 }
 
 # Private methods
-
 sub _extn {
    my $extn = $_[ 0 ]->extn;
 
@@ -228,7 +226,6 @@ sub _load_gettext {
 }
 
 # Private subroutines
-
 sub __get_attributes {
    my ($condition, $source) = @_;
 
@@ -236,10 +233,6 @@ sub __get_attributes {
                  and $_ ne q(name)
                  and $condition->( $_ ) } @{ $source->attributes || [] };
 }
-
-__PACKAGE__->meta->make_immutable;
-
-no Moose;
 
 1;
 
@@ -272,6 +265,10 @@ Defines the attributes
 =item C<lang>
 
 Two character language code
+
+=item C<schema>
+
+A weakened reference to the schema object
 
 =item C<storage>
 

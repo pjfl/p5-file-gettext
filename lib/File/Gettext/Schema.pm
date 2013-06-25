@@ -1,37 +1,37 @@
-# @(#)$Ident: Schema.pm 2013-04-11 17:06 pjf ;
+# @(#)$Ident: Schema.pm 2013-06-23 01:15 pjf ;
 
 package File::Gettext::Schema;
 
-use strict;
-use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.17.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use namespace::sweep;
+use version; our $VERSION = qv( sprintf '0.18.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
-use Moose;
 use File::DataClass::Constants;
-use File::DataClass::Constraints qw(Directory);
+use File::DataClass::Types  qw( Directory Str Undef );
 use File::Gettext::Constants;
 use File::Gettext::ResultSource;
 use File::Gettext::Storage;
-use MooseX::Types  -declare => [ qw(LanguageType) ];
-use MooseX::Types::Moose         qw(Str Undef);
+use Moo;
+use Scalar::Util            qw( blessed );
+use Type::Utils             qw( as coerce declare from enum via );
 
 extends qw(File::DataClass::Schema);
 
-subtype LanguageType, as Str;
-coerce  LanguageType, from Undef, via { LANG };
+my $LanguageType = declare as Str;
 
-has 'lang'      => is => 'rw', isa => LanguageType, coerce => TRUE,
-   default      => LANG;
+coerce $LanguageType, from Undef, via { LANG };
 
-has 'localedir' => is => 'ro', isa => Directory, coerce => TRUE,
-   default      => sub { DIRECTORIES->[ 0 ] };
+has 'lang'      => is => 'rw', isa => $LanguageType,
+   coerce       => $LanguageType->coercion, default => LANG;
+
+has 'localedir' => is => 'ro', isa => Directory, coerce => Directory->coercion,
+   default      => sub { LOCALE_DIRS->[ 0 ] };
 
 around 'BUILDARGS' => sub {
-   my ($next, $class, @args) = @_; my $attrs = $class->$next( @args );
+   my ($orig, $class, @args) = @_; my $attr = $orig->( $class, @args );
 
-   $attrs->{result_source_class} = q(File::Gettext::ResultSource);
+   $attr->{result_source_class} = q(File::Gettext::ResultSource);
 
-   return $attrs;
+   return $attr;
 };
 
 sub BUILD {
@@ -44,10 +44,6 @@ sub BUILD {
 
    return;
 }
-
-__PACKAGE__->meta->make_immutable;
-
-no Moose;
 
 1;
 
@@ -79,9 +75,17 @@ Defines these attributes
 
 The two character language code, e.g. C<de>.
 
+=item C<localedir>
+
+Path to the subtree containing the MO/PO files
+
 =back
 
 =head1 Subroutines/Methods
+
+=head2 BUILDARGS
+
+Sets the result source class to L<File::Gettext::ResultSource>
 
 =head2 BUILD
 

@@ -1,18 +1,18 @@
-# @(#)$Ident: MO.pm 2013-04-10 22:57 pjf ;
+# @(#)$Ident: MO.pm 2013-06-14 10:35 pjf ;
 
 package File::Gettext::Storage::MO;
 
-use strict;
-use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.17.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use namespace::sweep;
+use version; our $VERSION = qv( sprintf '0.18.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
-use Encode qw(decode);
+use Encode                     qw( decode );
 use File::DataClass::Constants;
-use File::DataClass::Functions qw(throw);
+use File::DataClass::Functions qw( throw );
 use File::Gettext::Constants;
-use Moose;
+use Moo;
+use MooX::Augment -class;
 
-extends qw(File::DataClass::Storage);
+extends q(File::DataClass::Storage);
 
 has '+extn' => default => q(.mo);
 
@@ -25,7 +25,6 @@ augment '_write_file' => sub {
 };
 
 # Private methods
-
 sub _read_filter {
    my ($self, $rdr) = @_; my $path = $rdr->pathname; my $raw = $rdr->all;
 
@@ -129,7 +128,6 @@ sub _read_filter {
 }
 
 # Private subroutines
-
 sub __decode {
    my ($charset, $text) = @_; defined $text or return;
 
@@ -137,10 +135,6 @@ sub __decode {
    $text =~ s{ [\\][\'] }{\'}gmsx; $text =~ s{ [\\][\"] }{\"}gmsx;
    return $text;
 }
-
-__PACKAGE__->meta->make_immutable;
-
-no Moose;
 
 1;
 
@@ -154,7 +148,7 @@ File::Gettext::Storage::MO - Storage class for GNU gettext machine object format
 
 =head1 Version
 
-This documents version v0.17.$Rev: 1 $ of L<File::Gettext::Storage::MO>
+This documents version v0.18.$Rev: 1 $ of L<File::Gettext::Storage::MO>
 
 =head1 Synopsis
 
@@ -163,6 +157,8 @@ This documents version v0.17.$Rev: 1 $ of L<File::Gettext::Storage::MO>
 =head1 Subroutines/Methods
 
 =head1 Configuration and Environment
+
+=head2 C<extn>
 
 =head1 Diagnostics
 

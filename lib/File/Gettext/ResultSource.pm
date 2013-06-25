@@ -1,20 +1,16 @@
-# @(#)$Ident: ResultSource.pm 2013-04-11 17:06 pjf ;
+# @(#)$Ident: ResultSource.pm 2013-06-14 10:21 pjf ;
 
 package File::Gettext::ResultSource;
 
-use strict;
-use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.17.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use namespace::sweep;
+use version; our $VERSION = qv( sprintf '0.18.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
-use Moose;
+use File::DataClass::Types  qw( HashRef );
+use Moo;
 
-extends qw(File::DataClass::ResultSource);
+extends q(File::DataClass::ResultSource);
 
-has 'lang_dep' => is => 'ro', isa => 'HashRef', default => sub { {} };
-
-__PACKAGE__->meta->make_immutable;
-
-no Moose;
+has 'lang_dep' => is => 'ro', isa => HashRef, default => sub { {} };
 
 1;
 

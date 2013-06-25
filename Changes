@@ -1,5 +1,8 @@
 Revision history for File::Gettext
 
+0.18.1    2013-06-25 18:49:24
+          - Mooified
+
 0.17.1    2013-06-09 15:13:07
           - Deprecated DIRECTORIES use LOCALE_DIRS
 

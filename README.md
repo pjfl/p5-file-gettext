@@ -4,7 +4,7 @@ File::Gettext - Read and write GNU gettext po/mo files
 
 # Version
 
-This documents version v0.17.$Rev: 1 $ of [File::Gettext](https://metacpan.org/module/File::Gettext)
+This documents version v0.18.$Rev: 1 $ of [File::Gettext](https://metacpan.org/module/File::Gettext)
 
 # Synopsis
 
@@ -19,6 +19,21 @@ writing of GNU Gettext PO files and the reading of MO files. Used by
 [Class::Usul::L10N](https://metacpan.org/module/Class::Usul::L10N) to translate application message strings into different
 languages
 
+# Configuration and Environment
+
+Defines the following attributes;
+
+- `catagory_name`
+- `charset`
+- `default_po_header`
+- `header_key_table`
+- `load`
+- `localedir`
+- `result_source_attributes`
+- `resultset`
+- `source`
+- `source_name`
+
 # Subroutines/Methods
 
 ## get\_path
@@ -32,10 +47,6 @@ Returns the path to the po/mo file for the specified language
     $gettext->set_path( $lang, $file );
 
 Sets the _path_ attribute on the parent class from `$lang` and `$file`
-
-# Configuration and Environment
-
-None
 
 # Diagnostics
 

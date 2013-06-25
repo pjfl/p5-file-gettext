@@ -1,34 +1,37 @@
-# @(#)$Ident: Gettext.pm 2013-06-09 13:56 pjf ;
+# @(#)$Ident: Gettext.pm 2013-06-14 12:03 pjf ;
 
 package File::Gettext;
 
 use 5.01;
-use strict;
-use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.17.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use namespace::sweep;
+use version; our $VERSION = qv( sprintf '0.18.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
-use English                      qw(-no_match_vars);
+use English                    qw( -no_match_vars );
 use File::DataClass::Constants;
-use File::DataClass::Constraints qw(Directory);
-use File::DataClass::Functions   qw(throw);
+use File::DataClass::Functions qw( throw );
 use File::DataClass::IO;
+use File::DataClass::Types     qw( ArrayRef Directory HashRef Str Undef );
 use File::Gettext::Constants;
-use File::Spec::Functions        qw(catfile tmpdir);
-use Moose::Util::TypeConstraints;
-use Moose;
+use File::Spec::Functions      qw( catfile tmpdir );
+use Moo;
+use Type::Utils                qw( as coerce declare from enum via );
 
-extends qw(File::DataClass::Schema);
+extends q(File::DataClass::Schema);
 
-subtype 'File::DataClass::Localedir', as Directory;
+my $LocaleDir  = declare as Directory;
+my $SourceType = enum 'SourceType' => [ qw(mo po) ];
 
-coerce 'File::DataClass::Localedir' =>
-   from 'ArrayRef' => via { __build_localedir( $_ ) },
-   from 'Str'      => via { __build_localedir( $_ ) },
-   from 'Undef'    => via { __build_localedir( $_ ) };
+coerce $LocaleDir,
+   from ArrayRef, via { __build_localedir( $_ ) },
+   from Str,      via { __build_localedir( $_ ) },
+   from Undef,    via { __build_localedir( $_ ) };
 
-has 'catagory_name'     => is => 'ro', isa => 'Str', default => q(LC_MESSAGES);
-has 'charset'           => is => 'ro', isa => 'Str', default => q(iso-8859-1);
-has 'default_po_header' => is => 'ro', isa => 'HashRef',
+# Public attributes
+has 'catagory_name'     => is => 'ro', isa => Str, default => q(LC_MESSAGES);
+
+has 'charset'           => is => 'ro', isa => Str, default => q(iso-8859-1);
+
+has 'default_po_header' => is => 'ro', isa => HashRef,
    default              => sub { {
       appname           => 'Your_Application',
       company           => 'ExampleCom',
@@ -36,7 +39,8 @@ has 'default_po_header' => is => 'ro', isa => 'HashRef',
       lang              => 'en',
       team              => 'Translators',
       translator        => 'Athena', } };
-has 'header_key_table'  => is => 'ro', isa => 'HashRef',
+
+has 'header_key_table'  => is => 'ro', isa => HashRef,
    default              => sub { {
       project_id_version        => [ 0,  q(Project-Id-Version)        ],
       report_msgid_bugs_to      => [ 1,  q(Report-Msgid-Bugs-To)      ],
@@ -49,8 +53,10 @@ has 'header_key_table'  => is => 'ro', isa => 'HashRef',
       content_type              => [ 8,  q(Content-Type)              ],
       content_transfer_encoding => [ 9,  q(Content-Transfer-Encoding) ],
       plural_forms              => [ 10, q(Plural-Forms)              ], } };
-has 'localedir'         => is => 'ro', isa => 'File::DataClass::Localedir',
-   default              => NUL, coerce => TRUE;
+
+has 'localedir'      => is => 'ro', isa => $LocaleDir,
+   coerce            => $LocaleDir->coercion, default => NUL;
+
 has '+result_source_attributes' =>
    default           => sub { {
       mo             => {
@@ -63,24 +69,27 @@ has '+result_source_attributes' =>
          defaults    => { 'flags' => [], 'msgstr' => [], },
          label_attr  => q(labels),
       }, } };
-has '+storage_class' => default => q(+File::Gettext::Storage::PO);
-has 'source_name'    => is => 'ro', isa => enum( [ qw(mo po) ] ),
-   default           => q(po), trigger => \&_set_storage_class;
 
+has '+storage_class' => default => q(+File::Gettext::Storage::PO);
+
+has 'source_name'    => is => 'ro', isa => $SourceType,
+   default           => q(po), trigger => TRUE;
+
+# Construction
 around 'source' => sub {
-   my ($next, $self) = @_; return $self->$next( $self->source_name );
+   my ($orig, $self) = @_; return $orig->( $self, $self->source_name );
 };
 
 around 'resultset' => sub {
-   my ($next, $self) = @_; return $self->$next( $self->source_name );
+   my ($orig, $self) = @_; return $orig->( $self, $self->source_name );
 };
 
 around 'load' => sub {
-   my ($next, $self, $lang, @names) = @_;
+   my ($orig, $self, $lang, @names) = @_;
 
    my @paths     = grep { $self->_is_file_or_log_debug( $_ ) }
                    map  { $self->_get_path_io( $lang, $_ ) } @names;
-   my $data      = $self->$next( @paths );
+   my $data      = $orig->( $self, @paths );
    my $po_header = exists $data->{po_header}
                  ? $data->{po_header}->{msgstr} || {} : {};
    my $plural_func;
@@ -110,6 +119,7 @@ around 'load' => sub {
    return $data;
 };
 
+# Public methods
 sub get_path {
    my ($self, $lang, $file) = @_;
 
@@ -125,7 +135,6 @@ sub set_path {
 }
 
 # Private methods
-
 sub _get_path_io {
    return io( $_[ 0 ]->get_path( $_[ 1 ], $_[ 2 ] ) );
 }
@@ -138,33 +147,26 @@ sub _is_file_or_log_debug {
    return FALSE;
 }
 
-sub _set_storage_class {
-   my $self = shift;
+sub _trigger_source_name {
+   my ($self, $source) = @_;
 
-   $self->source_name eq q(mo)
-      and $self->storage_class( q(+File::Gettext::Storage::MO) );
+   $source eq q(mo) and $self->storage_class( q(+File::Gettext::Storage::MO) );
 
    return;
 }
 
 # Private functions
-
 sub __build_localedir {
    my $dir = shift; my $io;
 
    $dir and $io = io( $dir ) and $io->is_dir and return $io;
 
-   for $dir (map { io( $_ ) } @{ DIRECTORIES() }) {
+   for $dir (map { io( $_ ) } @{ LOCALE_DIRS() }) {
       $dir->is_dir and return $dir;
    }
 
    return io( tmpdir() );
 }
-
-__PACKAGE__->meta->make_immutable;
-
-no Moose::Util::TypeConstraints;
-no Moose;
 
 1;
 
@@ -178,7 +180,7 @@ File::Gettext - Read and write GNU gettext po/mo files
 
 =head1 Version
 
-This documents version v0.17.$Rev: 1 $ of L<File::Gettext>
+This documents version v0.18.$Rev: 1 $ of L<File::Gettext>
 
 =head1 Synopsis
 
@@ -193,6 +195,34 @@ writing of GNU Gettext PO files and the reading of MO files. Used by
 L<Class::Usul::L10N> to translate application message strings into different
 languages
 
+=head1 Configuration and Environment
+
+Defines the following attributes;
+
+=over 3
+
+=item C<catagory_name>
+
+=item C<charset>
+
+=item C<default_po_header>
+
+=item C<header_key_table>
+
+=item C<load>
+
+=item C<localedir>
+
+=item C<result_source_attributes>
+
+=item C<resultset>
+
+=item C<source>
+
+=item C<source_name>
+
+=back
+
 =head1 Subroutines/Methods
 
 =head2 get_path
@@ -206,10 +236,6 @@ Returns the path to the po/mo file for the specified language
    $gettext->set_path( $lang, $file );
 
 Sets the I<path> attribute on the parent class from C<$lang> and C<$file>
-
-=head1 Configuration and Environment
-
-None
 
 =head1 Diagnostics
 

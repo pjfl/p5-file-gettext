@@ -1,18 +1,18 @@
-# @(#)$Ident: PO.pm 2013-04-10 22:57 pjf ;
+# @(#)$Ident: PO.pm 2013-06-14 10:35 pjf ;
 
 package File::Gettext::Storage::PO;
 
-use strict;
-use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.17.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use namespace::sweep;
+use version; our $VERSION = qv( sprintf '0.18.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Date::Format ();
 use Encode qw(decode encode);
 use File::DataClass::Constants;
 use File::Gettext::Constants;
-use Moose;
+use Moo;
+use MooX::Augment -class;
 
-extends qw(File::DataClass::Storage);
+extends q(File::DataClass::Storage);
 
 has '+extn' => default => q(.po);
 
@@ -45,7 +45,6 @@ sub make_key {
 }
 
 # Private read methods
-
 sub _read_filter {
    my ($self, $buf) = @_; $buf ||= [];
 
@@ -110,7 +109,6 @@ sub _store_record {
 }
 
 # Private write methods
-
 sub _write_filter {
    my ($self, $data) = @_; my $buf ||= [];
 
@@ -268,7 +266,6 @@ sub _split_on_nl {
 }
 
 # Private common methods
-
 sub _get_charset {
    my ($self, $po_header) = @_; my $charset = $self->schema->charset;
 
@@ -281,7 +278,6 @@ sub _get_charset {
 }
 
 # Private functions
-
 sub __append_msgtext {
    my ($rec, $key, $last, $text) = @_;
 
@@ -415,10 +411,6 @@ sub __unquote {
    return $text;
 }
 
-__PACKAGE__->meta->make_immutable;
-
-no Moose;
-
 1;
 
 __END__
@@ -431,7 +423,7 @@ File::Gettext::Storage::PO - Storage class for GNU Gettext portable object forma
 
 =head1 Version
 
-This documents version v0.17.$Rev: 1 $ of L<File::Gettext::Storage::PO>
+This documents version v0.18.$Rev: 1 $ of L<File::Gettext::Storage::PO>
 
 =head1 Synopsis
 
@@ -446,6 +438,8 @@ This documents version v0.17.$Rev: 1 $ of L<File::Gettext::Storage::PO>
 Concatenates the C<msgctxt> and C<msgid> attributes to form the hash key
 
 =head1 Configuration and Environment
+
+=head2 C<extn>
 
 =head1 Diagnostics
 
