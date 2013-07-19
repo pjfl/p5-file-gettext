@@ -1,10 +1,10 @@
-# @(#)$Ident: Gettext.pm 2013-06-14 12:03 pjf ;
+# @(#)$Ident: Gettext.pm 2013-07-19 12:26 pjf ;
 
 package File::Gettext;
 
 use 5.01;
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.18.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.18.%d', q$Rev: 3 $ =~ /\d+/gmx );
 
 use English                    qw( -no_match_vars );
 use File::DataClass::Constants;
@@ -121,13 +121,12 @@ around 'load' => sub {
 
 # Public methods
 sub get_path {
-   my ($self, $lang, $file) = @_;
+   my ($self, $lang, $file) = @_; my $extn = $self->storage->extn;
 
    $lang or throw 'Language not specified';
    $file or throw 'Language file path not specified';
 
-   return catfile( $self->localedir, $lang,
-                   $self->catagory_name, $file.$self->storage->extn );
+   return catfile( $self->localedir, $lang, $self->catagory_name, $file.$extn );
 }
 
 sub set_path {
@@ -180,7 +179,7 @@ File::Gettext - Read and write GNU gettext po/mo files
 
 =head1 Version
 
-This documents version v0.18.$Rev: 1 $ of L<File::Gettext>
+This documents version v0.18.$Rev: 3 $ of L<File::Gettext>
 
 =head1 Synopsis
 

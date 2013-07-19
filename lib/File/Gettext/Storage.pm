@@ -1,9 +1,9 @@
-# @(#)$Ident: Storage.pm 2013-06-14 12:04 pjf ;
+# @(#)$Ident: Storage.pm 2013-07-19 14:18 pjf ;
 
 package File::Gettext::Storage;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.18.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.18.%d', q$Rev: 3 $ =~ /\d+/gmx );
 
 use File::Basename             qw( basename );
 use File::DataClass::Constants;
@@ -118,9 +118,9 @@ sub update {
 
 # Private methods
 sub _extn {
-   my $extn = $_[ 0 ]->extn;
+   my $extn = (split m{ \. }mx, ($_[ 1 ] || NUL))[ -1 ];
 
-   return ref $extn eq CODE ? $extn->( $_[ 1 ] ) : $extn;
+   return $extn ? ".${extn}" : $_[ 0 ]->extn;
 }
 
 sub _build_gettext {
@@ -246,7 +246,7 @@ File::Gettext::Storage - Split/merge language dependent data
 
 =head1 Version
 
-0.16.$Rev: 1 $
+0.16.$Rev: 3 $
 
 =head1 Synopsis
 
