@@ -1,21 +1,15 @@
-# @(#)$Ident: Constants.pm 2013-06-09 14:11 pjf ;
+# @(#)$Ident: Constants.pm 2013-07-28 17:57 pjf ;
 
 package File::Gettext::Constants;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.18.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.18.%d', q$Rev: 4 $ =~ /\d+/gmx );
 
-my @_constants;
+use Exporter 5.57 qw( import );
 
-BEGIN {
-   @_constants = ( qw(CONTEXT_SEP DIRECTORIES LOCALE_DIRS MAGIC_N
-                      MAGIC_V PLURAL_SEP) );
-}
-
-use Sub::Exporter::Progressive -setup => {
-   exports => [ @_constants ], groups => { default => [ @_constants ], },
-};
+our @EXPORT = qw( CONTEXT_SEP DIRECTORIES LOCALE_DIRS MAGIC_N
+                  MAGIC_V PLURAL_SEP );
 
 sub CONTEXT_SEP () {
    return "\004";
@@ -55,7 +49,7 @@ File::Gettext::Constants - Definitions of constant values
 
 =head1 Version
 
-This documents version v0.18.$Rev: 1 $ of L<File::Gettext::Constants>
+This documents version v0.18.$Rev: 4 $ of L<File::Gettext::Constants>
 
 =head1 Synopsis
 

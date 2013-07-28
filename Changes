@@ -1,6 +1,7 @@
 Revision history for File::Gettext
 
-0.18.3    2013-07-19 15:20:35
+0.18.4    2013-07-28 18:59:56
+          - Dropped ::Exporter::Progressive
           - Fixed ::Storage::Any extn lookup
           - Mooified
 
