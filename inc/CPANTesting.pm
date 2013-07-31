@@ -1,4 +1,4 @@
-# @(#)Ident: CPANTesting.pm 2013-07-30 16:31 pjf ;
+# @(#)Ident: CPANTesting.pm 2013-07-31 20:09 pjf ;
 
 package CPANTesting;
 
@@ -14,19 +14,21 @@ sub is_testing { !! ($ENV{AUTOMATED_TESTING} || $ENV{PERL_CR_SMOKER_CURRENT}
 sub should_abort {
    is_testing() or return 0;
 
-   $host eq q(xphvmfred) and return
-      "ABORT: ${host} - cc06993e-a5e9-11e2-83b7-87183f85d660";
+   $host eq q(xphvmfred)
+      and return "ABORT: cc06993e-a5e9-11e2-83b7-87183f85d660";
+   $host =~ m{ nigelhorne }mx
+      and return "ABORT: 52e56e36-f9f4-11e2-90a1-fb47fbca4e08";
    return 0;
 }
 
 sub test_exceptions {
    my $p = shift; my $perl_ver = $p->{requires}->{perl};
 
-   is_testing()         or  return 0;
-   $] < $perl_ver       and return "TESTS: Perl minimum ${perl_ver}";
-   $p->{stop_tests}     and return 'TESTS: CPAN Testing stopped in Build.PL';
-   $osname eq q(mirbsd) and return 'TESTS: Mirbsd OS unsupported';
-#  $host   eq q(broken) and return "tests: <CPAN Testing uuid>";
+   is_testing()        or  return 0;
+   $] < $perl_ver      and return "TESTS: Perl minimum ${perl_ver}";
+   $p->{stop_tests}    and return 'TESTS: CPAN Testing stopped in Build.PL';
+   $osname eq 'mirbsd' and return 'TESTS: Mirbsd OS unsupported';
+   $host eq 'vmrz0046' and return 'TESTS: abcbe97a-f9b9-11e2-ae15-23709ec022a8';
    return 0;
 }
 
