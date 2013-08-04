@@ -1,5 +1,8 @@
 Revision history for File::Gettext
 
+0.19.1    2013-08-04 10:11:06
+          - POD Updates
+
 0.18.8    2013-07-31 21:28:56
           - More toolchain adjustments
           - New method for CPANTesting min Perl ver

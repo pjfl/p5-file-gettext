@@ -1,9 +1,9 @@
-# @(#)$Ident: Storage.pm 2013-07-19 14:18 pjf ;
+# @(#)$Ident: Storage.pm 2013-08-04 08:50 pjf ;
 
 package File::Gettext::Storage;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.18.%d', q$Rev: 3 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.19.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use File::Basename             qw( basename );
 use File::DataClass::Constants;
@@ -44,7 +44,6 @@ sub delete {
 }
 
 sub dump {
-   # Moose delegation bug. Finds Moose::Object::dump instead
    my ($self, $path, $data) = @_; $self->validate_params( $path, TRUE );
 
    my $gettext      = $self->_gettext( $path );
@@ -246,7 +245,7 @@ File::Gettext::Storage - Split/merge language dependent data
 
 =head1 Version
 
-0.16.$Rev: 3 $
+This document describes v0.19.$Rev: 1 $ of L<File::Gettext::Storage>
 
 =head1 Synopsis
 

@@ -1,4 +1,4 @@
-# @(#)Ident: Bob.pm 2013-07-30 12:37 pjf ;
+# @(#)Ident: Bob.pm 2013-08-03 20:50 pjf ;
 
 package Bob;
 
@@ -10,15 +10,13 @@ sub whimper { print {*STDOUT} $_[ 0 ]."\n"; exit 0 }
 
 BEGIN { my $reason; $reason = CPANTesting::should_abort and whimper $reason; }
 
-use version; our $VERSION = qv( '1.15' );
+use version; our $VERSION = qv( '1.19' );
 
 use File::Spec::Functions qw( catfile );
 use Module::Build;
 
 sub new {
-   my ($class, $p) = @_; $p ||= {}; $p->{requires} ||= {};
-
-   __is_above_min( $p->{requires}->{perl} ||= 5.008_008 );
+   my ($class, $p) = @_; $p ||= {}; $p->{requires} ||= {}; __is_above_min( $p );
 
    my $module      = $p->{module} or whimper 'No module name';
    my $distname    = $module; $distname =~ s{ :: }{-}gmx;
@@ -45,8 +43,16 @@ sub new {
 
 # Private functions
 sub __is_above_min {
-   CPANTesting::is_testing() and return;
-   $] < $_[ 0 ] and whimper 'Minimum Perl version is '.$_[ 0 ];
+   my $p        = shift;
+   my $perl_ver = $p->{_min_perl_ver} = $p->{requires}->{perl} ||= 5.008_008;
+
+   not CPANTesting::is_testing() and $] < $perl_ver
+      and whimper "Minimum required Perl version is ${perl_ver}";
+   CPANTesting::is_testing() and $] < $perl_ver and $p->{requires} =
+      $p->{build_requires} = $p->{configure_requires}
+         = { 'version' => 0.88, 'Module::Build' => 0.4004, }
+      and $p->{requires}->{perl} = 5.008 and $p->{recommends} = {};
+   return;
 }
 
 sub __is_src { # Is this the developer authoring a module?

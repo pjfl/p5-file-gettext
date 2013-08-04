@@ -1,9 +1,9 @@
-# @(#)$Ident: PO.pm 2013-06-14 10:35 pjf ;
+# @(#)$Ident: PO.pm 2013-08-04 08:49 pjf ;
 
 package File::Gettext::Storage::PO;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.18.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.19.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Date::Format ();
 use Encode qw(decode encode);
@@ -423,7 +423,7 @@ File::Gettext::Storage::PO - Storage class for GNU Gettext portable object forma
 
 =head1 Version
 
-This documents version v0.18.$Rev: 1 $ of L<File::Gettext::Storage::PO>
+This documents version v0.19.$Rev: 1 $ of L<File::Gettext::Storage::PO>
 
 =head1 Synopsis
 
@@ -447,7 +447,7 @@ Concatenates the C<msgctxt> and C<msgid> attributes to form the hash key
 
 =over 3
 
-=item L<Moose>
+=item L<Moo>
 
 =back
 

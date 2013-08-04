@@ -4,7 +4,7 @@ File::Gettext - Read and write GNU gettext po/mo files
 
 # Version
 
-This documents version v0.18.$Rev: 8 $ of [File::Gettext](https://metacpan.org/module/File::Gettext)
+This documents version v0.19.$Rev: 1 $ of [File::Gettext](https://metacpan.org/module/File::Gettext)
 
 # Synopsis
 
@@ -24,15 +24,34 @@ languages
 Defines the following attributes;
 
 - `catagory_name`
+
+    Subdirectory of `localdir` that contains the `mo` / `po` files. Defaults
+    to `LC_MESSAGES`
+
 - `charset`
+
+    Default character set used it the `mo` / `po` does not specify one. Defaults
+    to `iso-8859-1`
+
 - `default_po_header`
+
+    Default header information used to create new `po` files
+
 - `header_key_table`
-- `load`
+
+    Maps attribute header names onto their `po` file header strings
+
 - `localedir`
+
+    Base path to the `mo` / `po` files
+
 - `result_source_attributes`
-- `resultset`
-- `source`
+
+    Defines the attributes available in the result object
+
 - `source_name`
+
+    Either `po` or `mo`. Defaults to `po`
 
 # Subroutines/Methods
 
@@ -42,11 +61,25 @@ Defines the following attributes;
 
 Returns the path to the po/mo file for the specified language
 
+## load
+
+This method modifier adds the pluralization function to the return data
+
+## resultset
+
+A method modifier that provides the result source name to the same method
+in the parent class
+
 ## set\_path
 
     $gettext->set_path( $lang, $file );
 
 Sets the _path_ attribute on the parent class from `$lang` and `$file`
+
+## source
+
+A method modifier that provides the result source name to the same method
+in the parent class
 
 # Diagnostics
 
@@ -55,7 +88,7 @@ None
 # Dependencies
 
 - [File::DataClass](https://metacpan.org/module/File::DataClass)
-- [Moose](https://metacpan.org/module/Moose)
+- [Moo](https://metacpan.org/module/Moo)
 
 # Incompatibilities
 

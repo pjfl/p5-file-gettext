@@ -1,10 +1,10 @@
-# @(#)$Ident: Gettext.pm 2013-07-31 20:28 pjf ;
+# @(#)$Ident: Gettext.pm 2013-08-04 09:08 pjf ;
 
 package File::Gettext;
 
 use 5.01;
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.18.%d', q$Rev: 8 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.19.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use English                    qw( -no_match_vars );
 use File::DataClass::Constants;
@@ -179,7 +179,7 @@ File::Gettext - Read and write GNU gettext po/mo files
 
 =head1 Version
 
-This documents version v0.18.$Rev: 8 $ of L<File::Gettext>
+This documents version v0.19.$Rev: 1 $ of L<File::Gettext>
 
 =head1 Synopsis
 
@@ -202,23 +202,33 @@ Defines the following attributes;
 
 =item C<catagory_name>
 
+Subdirectory of C<localdir> that contains the F<mo> / F<po> files. Defaults
+to C<LC_MESSAGES>
+
 =item C<charset>
+
+Default character set used it the F<mo> / F<po> does not specify one. Defaults
+to C<iso-8859-1>
 
 =item C<default_po_header>
 
+Default header information used to create new F<po> files
+
 =item C<header_key_table>
 
-=item C<load>
+Maps attribute header names onto their F<po> file header strings
 
 =item C<localedir>
 
+Base path to the F<mo> / F<po> files
+
 =item C<result_source_attributes>
 
-=item C<resultset>
-
-=item C<source>
+Defines the attributes available in the result object
 
 =item C<source_name>
+
+Either F<po> or F<mo>. Defaults to F<po>
 
 =back
 
@@ -230,11 +240,25 @@ Defines the following attributes;
 
 Returns the path to the po/mo file for the specified language
 
+=head2 load
+
+This method modifier adds the pluralization function to the return data
+
+=head2 resultset
+
+A method modifier that provides the result source name to the same method
+in the parent class
+
 =head2 set_path
 
    $gettext->set_path( $lang, $file );
 
 Sets the I<path> attribute on the parent class from C<$lang> and C<$file>
+
+=head2 source
+
+A method modifier that provides the result source name to the same method
+in the parent class
 
 =head1 Diagnostics
 
@@ -246,7 +270,7 @@ None
 
 =item L<File::DataClass>
 
-=item L<Moose>
+=item L<Moo>
 
 =back
 
