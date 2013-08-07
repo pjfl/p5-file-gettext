@@ -1,10 +1,10 @@
-# @(#)$Ident: Gettext.pm 2013-08-04 09:08 pjf ;
+# @(#)$Ident: Gettext.pm 2013-08-07 10:09 pjf ;
 
 package File::Gettext;
 
-use 5.01;
+use 5.010001;
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.19.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.19.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 use English                    qw( -no_match_vars );
 use File::DataClass::Constants;
@@ -179,7 +179,7 @@ File::Gettext - Read and write GNU gettext po/mo files
 
 =head1 Version
 
-This documents version v0.19.$Rev: 1 $ of L<File::Gettext>
+This documents version v0.19.$Rev: 2 $ of L<File::Gettext>
 
 =head1 Synopsis
 

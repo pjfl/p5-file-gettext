@@ -16,8 +16,6 @@ sub should_abort {
 
    $host eq q(xphvmfred) and return
       "ABORT: ${host} - cc06993e-a5e9-11e2-83b7-87183f85d660";
-   $host =~ m{ nigelhorne }mx
-      and return "ABORT: 52e56e36-f9f4-11e2-90a1-fb47fbca4e08";
    return 0;
 }
 
