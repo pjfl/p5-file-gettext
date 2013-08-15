@@ -1,37 +1,35 @@
-# @(#)$Ident: 10test_script.t 2013-06-09 14:05 pjf ;
+# @(#)$Ident: 10test_script.t 2013-08-15 17:02 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.19.%d', q$Rev: 1 $ =~ /\d+/gmx );
-use File::Spec::Functions;
-use FindBin qw( $Bin );
-use lib catdir( $Bin, updir, q(lib) );
+use version; our $VERSION = qv( sprintf '0.20.%d', q$Rev: 0 $ =~ /\d+/gmx );
+use File::Spec::Functions   qw( catdir catfile updir );
+use FindBin                 qw( $Bin );
+use lib                 catdir( $Bin, updir, 'lib' );
 use utf8;
 
 use Module::Build;
 use Test::More;
 
-my $reason;
+my $notes = {};
 
 BEGIN {
    my $builder = eval { Module::Build->current };
-
-   $builder and $reason = $builder->notes->{stop_tests};
-   $reason  and $reason =~ m{ \A TESTS: }mx and plan skip_all => $reason;
+      $builder and $notes = $builder->notes;
 }
 
-use English qw(-no_match_vars);
+use English qw( -no_match_vars );
 use File::DataClass::IO;
 use Text::Diff;
 
-use_ok q(File::Gettext);
+use_ok 'File::Gettext';
 
-my $orig   = catfile( qw(t messages.po) );
-my $dumped = io( [ qw(t dumped.messages) ] ); $dumped->unlink;
+my $orig   = catfile( qw( t messages.po ) );
+my $dumped = io( [ qw( t dumped.messages ) ] ); $dumped->unlink;
 my $schema = File::Gettext->new( { charset => 'UTF-8',
-                                   path => $orig, tempdir => q(t) } );
+                                   path => $orig, tempdir => 't' } );
 
-isa_ok $schema, q(File::Gettext);
+isa_ok $schema, 'File::Gettext';
 
 my $data = $schema->load;
 
@@ -46,16 +44,16 @@ $diff = diff $orig, $dumped->pathname;
 
 ok !$diff, 'Load and dump roundtrips 2';
 
-$orig   = catfile( qw(t existing.po) );
-$schema = File::Gettext->new( { path => $orig, tempdir => q(t) } );
+$orig   = catfile( qw( t existing.po ) );
+$schema = File::Gettext->new( { path => $orig, tempdir => 't' } );
 $data   = $schema->load;
 
 ok $data->{po}->{January}->{msgstr}->[ 0 ] eq 'Januar', 'PO message lookup';
 ok $data->{po}->{March}->{msgstr}->[ 0 ] eq 'März', 'PO charset decode';
 
-$orig   = catfile( qw(t existing.mo) );
+$orig   = catfile( qw( t existing.mo ) );
 $schema = File::Gettext->new( {
-   path => $orig, source_name => q(mo), tempdir => q(t) } );
+   path => $orig, source_name => q(mo), tempdir => 't' } );
 $data   = $schema->load;
 
 ok $data->{mo}->{January}->{msgstr}->[ 0 ] eq 'Januar', 'MO message lookup';
@@ -66,9 +64,9 @@ done_testing;
 # Cleanup
 
 $dumped->unlink;
-io( catfile( qw(t ipc_srlock.lck) ) )->unlink;
-io( catfile( qw(t ipc_srlock.shm) ) )->unlink;
-io( catfile( qw(t file-dataclass-schema.dat) ) )->unlink;
+io( catfile( qw( t ipc_srlock.lck ) ) )->unlink;
+io( catfile( qw( t ipc_srlock.shm ) ) )->unlink;
+io( catfile( qw( t file-dataclass-schema.dat ) ) )->unlink;
 
 # Local Variables:
 # coding: utf-8

@@ -3,7 +3,7 @@
 package File::Gettext::Storage;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.19.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.20.%d', q$Rev: 0 $ =~ /\d+/gmx );
 
 use File::Basename             qw( basename );
 use File::DataClass::Constants;
@@ -245,7 +245,7 @@ File::Gettext::Storage - Split/merge language dependent data
 
 =head1 Version
 
-This document describes v0.19.$Rev: 1 $ of L<File::Gettext::Storage>
+This document describes v0.20.$Rev: 0 $ of L<File::Gettext::Storage>
 
 =head1 Synopsis
 

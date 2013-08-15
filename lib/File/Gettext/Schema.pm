@@ -3,7 +3,7 @@
 package File::Gettext::Schema;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.19.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.20.%d', q$Rev: 0 $ =~ /\d+/gmx );
 
 use File::DataClass::Constants;
 use File::DataClass::Types  qw( Directory Str Undef );
@@ -57,7 +57,7 @@ File::Gettext::Schema - Adds language support to the default schema
 
 =head1 Version
 
-The document describes v0.19.$Rev: 1 $ of L<File::Gettext::Schema>
+The document describes v0.20.$Rev: 0 $ of L<File::Gettext::Schema>
 
 =head1 Synopsis
 

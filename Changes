@@ -1,5 +1,7 @@
 Revision history for File::Gettext
 
+          - Switched to Dist::Zilla
+
 0.19.3    2013-08-07 18:28:56
           - Reset min perl testing to original behaviour
           - Raised minimum Perl version to v5.10.1
