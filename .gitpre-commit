@@ -1,14 +1,14 @@
 #!/usr/bin/env perl
-# @(#)Ident: .gitpre-commit 2013-04-06 15:13 pjf ;
+# @(#)Ident: gitpre-commit 2013-08-15 17:09 pjf ;
 
 use strict;
 use warnings;
-use lib qw(lib);
-use version; our $VERSION = qv( '0.1' );
+use lib qw( lib );
+use version; our $VERSION = qv( '0.2' );
 
-use Date::Format          qw(time2str);
-use English               qw(-no_match_vars);
-use File::Spec::Functions qw(catfile updir);
+use Date::Format          qw( time2str );
+use English               qw( -no_match_vars );
+use File::Spec::Functions qw( catfile updir );
 use Module::Metadata;
 use Perl::Version;
 
@@ -17,7 +17,7 @@ sub __read_all_from ($) {
 
    open my $fh, '<', $path or die 'Path ${path} cannot open: ${OS_ERROR}';
 
-   my $content = do { local $RS = undef; <$fh> }; close $fh; return $content;
+   local $RS = undef; my $content = <$fh>; close $fh; return $content;
 }
 
 sub __write_data_to ($$) {
@@ -28,18 +28,31 @@ sub __write_data_to ($$) {
    print {$fh} $data; close $fh; return;
 }
 
+sub __get_module_from ($) {
+   return
+      (map    { s{ [-] }{::}gmx; $_ }
+       map    { m{ \A [q\'\"] }mx ? eval $_ : $_ }
+       map    { m{ \A \s* (?:module|name) \s+ [=]?[>]? \s* ([^,;]+) [,;]? }imx }
+       grep   { m{ \A \s*   (module|name) }imx }
+       split m{ [\n] }mx, $_[ 0 ])[ 0 ];
+}
+
+sub __get_ignore_rev_regex () {
+   my $ignore_rev_file = '.gitignore-rev'; -f $ignore_rev_file or return;
+
+   my $paths = __read_all_from $ignore_rev_file; chomp $paths;
+
+   return join '|', split m{ [\n] }mx, $paths;
+}
+
 my ($module, $rev, $rev_file);
 
-my $project_file = -f 'Build.PL'    ? 'Build.PL'    :
+my $project_file = -f 'dist.ini'    ? 'dist.ini'    :
+                   -f 'Build.PL'    ? 'Build.PL'    :
                    -f 'Makefile.PL' ? 'Makefile.PL' : undef;
 
 if (defined $project_file) {
-   my $content  = __read_all_from $project_file;
-
-   $module = (map    { eval $_ }
-              map    { m{ \A \s* (?:module|name) \s* => \s* (.+) [,] }imx }
-              grep   { m{ \A \s*   (module|name) }imx }
-              split m{ [\n] }mx, $content)[ 0 ];
+   $module = __get_module_from __read_all_from $project_file;
 
    my $distname = lc $module; $distname =~ s{ :: }{-}gmx;
 
@@ -49,15 +62,9 @@ if (defined $project_file) {
 }
 
 if (defined $rev and qx{ git branch 2>/dev/null } =~ m{ \A [*] \s+ master }mx) {
-   my @stat = split m{ \n }mx, qx{ git status --porcelain }; my $found = 0;
-
-   my $ignore; my $ignore_rev_file = '.gitignore-rev';
-
-   if (-f $ignore_rev_file) {
-      my $paths = __read_all_from $ignore_rev_file; chomp $paths;
-
-      $ignore = join '|', split m{ [\n] }mx, $paths;
-   }
+   my @stat   = split m{ \n }mx, qx{ git status --porcelain };
+   my $ignore = __get_ignore_rev_regex;
+   my $found  = 0;
 
    for my $path (map { s{ \A .+ \s+ }{}mx; $_ } grep { m{ \A [AM] }mx } @stat) {
       $ignore and $path =~ m{ (?: $ignore ) }mx and next;
@@ -87,7 +94,7 @@ if (-f $changes_file) {
                    ? Module::Metadata->new_from_module( $module ) : undef;
    my $module_ver  = $meta ? $meta->version : qv( '0.1.1' );
 
-   $meta or warn "No meta object for module ${module}";
+   $meta or warn 'No meta object for module '.($module // '<undef>');
 
    if ($module_ver > $changes_ver) {
       my $stamp  = time2str( '%Y-%m-%d %H:%M:%S', time );

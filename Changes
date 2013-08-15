@@ -1,5 +1,6 @@
 Revision history for File::Gettext
 
+0.20.0    2013-08-15 18:14:56
           - Switched to Dist::Zilla
 
 0.19.3    2013-08-07 18:28:56
