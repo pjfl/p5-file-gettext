@@ -3,7 +3,7 @@
 package File::Gettext::ResultSource;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.20.%d', q$Rev: 0 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.21.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use File::DataClass::Types  qw( HashRef );
 use Moo;
@@ -24,7 +24,7 @@ File::Gettext::ResultSource - Result source localisation
 
 =head1 Version
 
-The document describes v0.20.$Rev: 0 $ of L<File::Gettext::ResultSource>
+The document describes v0.21.$Rev: 1 $ of L<File::Gettext::ResultSource>
 
 =head1 Synopsis
 

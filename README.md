@@ -4,7 +4,7 @@ File::Gettext - Read and write GNU gettext po/mo files
 
 # Version
 
-This documents version v0.20.$Rev: 0 $ of [File::Gettext](https://metacpan.org/module/File::Gettext)
+This documents version v0.21.$Rev: 0 $ of [File::Gettext](https://metacpan.org/module/File::Gettext)
 
 # Synopsis
 

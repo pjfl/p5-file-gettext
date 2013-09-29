@@ -1,33 +1,7 @@
 Revision history for File::Gettext
 
+0.21.1    2013-09-29 02:08:24
+          - Function merge_hash_data rename merge_file_data
+
 0.20.0    2013-08-15 18:14:56
           - Switched to Dist::Zilla
-
-0.19.3    2013-08-07 18:28:56
-          - Reset min perl testing to original behaviour
-          - Raised minimum Perl version to v5.10.1
-          - POD Updates
-
-0.18.8    2013-07-31 21:28:56
-          - More toolchain adjustments
-          - New method for CPANTesting min Perl ver
-          - Added fremen and frogman to tier gruber
-          - Aborting Bingoes failed see df276fba-f57c-11e2-8c80-50d7c5c10595
-            No choice but to send this smoker to sleep 10 while 1.
-            Chris Williams, put my pause id in your stop list
-          - Dropped ::Exporter::Progressive
-          - Fixed ::Storage::Any extn lookup
-          - Mooified
-
-0.17.1    2013-06-09 15:13:07
-          - Deprecated DIRECTORIES use LOCALE_DIRS
-
-0.16.5    2013-04-14 16:38:11
-          - Updated POD
-          - Fixed version number in t/20with-language.t
-          - Extracted Schema, ResultSource and Stroage classes from F::DC
-          - Imported code and tests from File::DataClass distribution
-
-0.1.1     2013-04-10 23:44:32
-          - Created initial project files
-

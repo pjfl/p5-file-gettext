@@ -4,7 +4,7 @@ package File::Gettext::Constants;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.20.%d', q$Rev: 0 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.21.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Exporter 5.57 qw( import );
 
@@ -49,7 +49,7 @@ File::Gettext::Constants - Definitions of constant values
 
 =head1 Version
 
-This documents version v0.20.$Rev: 0 $ of L<File::Gettext::Constants>
+This documents version v0.21.$Rev: 1 $ of L<File::Gettext::Constants>
 
 =head1 Synopsis
 

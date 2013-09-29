@@ -1,13 +1,13 @@
-# @(#)$Ident: Storage.pm 2013-08-04 08:50 pjf ;
+# @(#)$Ident: Storage.pm 2013-09-29 01:02 pjf ;
 
 package File::Gettext::Storage;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.20.%d', q$Rev: 0 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.21.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use File::Basename             qw( basename );
 use File::DataClass::Constants;
-use File::DataClass::Functions qw( is_stale merge_hash_data throw );
+use File::DataClass::Functions qw( is_stale merge_file_data throw );
 use File::DataClass::Types     qw( Object );
 use File::Gettext;
 use Moo;
@@ -91,7 +91,7 @@ sub load {
 
       if ($red) {
          $path_mtime > $newest and $newest = $path_mtime;
-         merge_hash_data $data, $red;
+         merge_file_data $data, $red;
       }
 
       $path_mtime = $self->_load_gettext( $data, $path );
@@ -245,7 +245,7 @@ File::Gettext::Storage - Split/merge language dependent data
 
 =head1 Version
 
-This document describes v0.20.$Rev: 0 $ of L<File::Gettext::Storage>
+This document describes v0.21.$Rev: 1 $ of L<File::Gettext::Storage>
 
 =head1 Synopsis
 
