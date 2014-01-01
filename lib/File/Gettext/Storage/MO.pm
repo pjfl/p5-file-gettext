@@ -1,20 +1,20 @@
-# @(#)$Ident: MO.pm 2013-08-04 08:49 pjf ;
+# @(#)$Ident: MO.pm 2014-01-01 15:26 pjf ;
 
 package File::Gettext::Storage::MO;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.21.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.22.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
+use Moo;
 use Encode                     qw( decode );
 use File::DataClass::Constants;
 use File::DataClass::Functions qw( throw );
 use File::Gettext::Constants;
-use Moo;
 use MooX::Augment -class;
 
 extends q(File::DataClass::Storage);
 
-has '+extn' => default => q(.mo);
+has '+extn' => default => '.mo';
 
 augment '_read_file' => sub {
    my ($self, $rdr) = @_; return $self->_read_filter( $rdr );
@@ -30,16 +30,16 @@ sub _read_filter {
 
    my $size = length $raw; $size < 28
       and throw error => 'Path [_1] corrupted', args => [ $path ];
-   my %meta = (); my $unpack = q(N);
+   my %meta = (); my $unpack = 'N';
 
    $meta{magic} = unpack $unpack, substr $raw, 0, 4;
 
-   if    ($meta{magic} == MAGIC_V) { $unpack = q(V) }
+   if    ($meta{magic} == MAGIC_V) { $unpack = 'V' }
    elsif ($meta{magic} != MAGIC_N) {
       throw error => 'Path [_1] bad magic', args => [ $path ];
    }
 
-   @meta{ qw(revision num_strings msgids_off msgstrs_off hash_size hash_off) }
+   @meta{ qw( revision num_strings msgids_off msgstrs_off hash_size hash_off ) }
       = unpack( ($unpack x 6), substr $raw, 4, 24 );
 
    $meta{revision} == 0 or throw error => 'Path [_1 ] invalid version',
@@ -148,7 +148,7 @@ File::Gettext::Storage::MO - Storage class for GNU gettext machine object format
 
 =head1 Version
 
-This documents version v0.21.$Rev: 1 $ of L<File::Gettext::Storage::MO>
+This documents version v0.22.$Rev: 1 $ of L<File::Gettext::Storage::MO>
 
 =head1 Synopsis
 
@@ -190,7 +190,7 @@ Peter Flanigan, C<< <Support at RoxSoft.co.uk> >>
 
 =head1 License and Copyright
 
-Copyright (c) 2013 Peter Flanigan. All rights reserved
+Copyright (c) 2014 Peter Flanigan. All rights reserved
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself. See L<perlartistic>

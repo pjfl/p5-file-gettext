@@ -1,5 +1,9 @@
 Revision history for File::Gettext
 
+0.22.1    2014-01-01 15:29:44
+          - Uses default exception error stings for NothingUpdated
+          - Tests select storage class since JSON is now the default
+
 0.21.1    2013-09-29 02:08:24
           - Function merge_hash_data rename merge_file_data
 

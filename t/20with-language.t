@@ -1,25 +1,26 @@
-# @(#)$Ident: 20with-language.t 2013-06-09 14:04 pjf ;
+# @(#)$Ident: 20with-language.t 2014-01-01 15:18 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.21.%d', q$Rev: 1 $ =~ /\d+/gmx );
-use File::Spec::Functions;
-use FindBin qw( $Bin );
-use lib catdir( $Bin, updir, q(lib) );
+use version; our $VERSION = qv( sprintf '0.22.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use File::Spec::Functions   qw( catdir catfile updir );
+use FindBin                 qw( $Bin );
+use lib                 catdir( $Bin, updir, 'lib' );
 
-use Module::Build;
 use Test::More;
+use Test::Requires { version => 0.88 };
+use Module::Build;
 
-my $reason;
+my $notes = {}; my $perl_ver;
 
 BEGIN {
    my $builder = eval { Module::Build->current };
-
-   $builder and $reason = $builder->notes->{stop_tests};
-   $reason  and $reason =~ m{ \A TESTS: }mx and plan skip_all => $reason;
+      $builder and $notes = $builder->notes;
+      $perl_ver = $notes->{min_perl_version} || 5.008;
 }
 
-use English qw(-no_match_vars);
+use Test::Requires "${perl_ver}";
+use English qw( -no_match_vars );
 use File::DataClass::IO;
 use Text::Diff;
 
@@ -44,79 +45,73 @@ use_ok 'File::Gettext::Schema';
 
 my $osname  = lc $OSNAME;
 my $ntfs    = $osname eq 'mswin32' || $osname eq 'cygwin' ? 1 : 0;
-my $default = catfile( qw(t default.xml) );
+my $default = catfile( qw( t default.json ) );
 my $schema  = File::Gettext::Schema->new
    ( path      => $default,
-     lang      => q(en),
-     localedir => catdir( qw(t locale) ),
+     lang      => 'en',
+     localedir => catdir( qw( t locale ) ),
      result_source_attributes => {
         pages => {
-           attributes => [ qw(columns heading) ],
-           lang       => q(en),
-           lang_dep   => { qw(heading 1) }, }, },
-     tempdir => q(t) );
+           attributes => [ qw( columns heading ) ],
+           lang       => 'en',
+           lang_dep   => { qw( heading 1 ) }, }, },
+     tempdir => 't' );
 
-isa_ok( $schema, q(File::DataClass::Schema) );
+isa_ok $schema, 'File::DataClass::Schema';
+is $schema->lang, 'en', 'Has language attribute';
 
-is $schema->lang, q(en), 'Has language attribute';
+my $source = $schema->source( 'pages' );
+my $rs     = $source->resultset;
+my $args   = { name => 'dummy', columns => 3, heading => 'This is a heading', };
+my $res    = test $rs, 'create', $args;
 
-my $source = $schema->source( q(pages) );
+is $res, 'dummy', 'Creates dummy element and inserts';
 
-my $rs = $source->resultset; my $args = {};
+$args->{columns} = '2'; $args->{heading} = 'This is a heading also';
 
-$args->{name} = q(dummy); $args->{columns} = 3;
+$res = test $rs, 'update', $args;
 
-$args->{heading} = q(This is a heading);
-
-my $res = test $rs, q(create), $args;
-
-is $res, q(dummy), 'Creates dummy element and inserts';
-
-$args->{columns} = q(2); $args->{heading} = q(This is a heading also);
-
-$res = test $rs, q(update), $args;
-
-is $res, q(dummy), 'Can update';
+is $res, 'dummy', 'Can update';
 
 $ntfs and $schema->path->close; # See if this fixes winshite
 
 delete $args->{columns}; delete $args->{heading};
 
-$res = test $rs, q(find), $args;
+$res = test $rs, 'find', $args;
 
 is $res->columns, 2, 'Can find';
 
 $ntfs and $schema->path->close; # See if this fixes winshite
 
-my $e = test $rs, q(create), $args;
+my $e = test $rs, 'create', $args;
 
 ok $e =~ m{ already \s+ exists }mx, 'Detects already existing element';
 
 $ntfs and $schema->path->close; # See if this fixes winshite
 
-$res = test $rs, q(delete), $args;
+$res = test $rs, 'delete', $args;
 
-is $res, q(dummy), 'Deletes dummy element';
+is $res, 'dummy', 'Deletes dummy element';
 
-$e = test $rs, q(delete), $args;
+$e = test $rs, 'delete', $args;
 
 ok $e =~ m{ does \s+ not \s+ exist }mx, 'Detects non existing element';
 
-$schema->lang( q(de) ); $args->{name} = q(dummy);
+$schema->lang( 'de' ); $args->{name} = 'dummy';
 
-$args->{columns} = 3; $args->{heading} = q(This is a heading);
+$args->{columns} = 3; $args->{heading} = 'This is a heading';
 
-$res = test $rs, q(create), $args;
+$res = test $rs, 'create', $args;
 
-is $res, q(dummy), 'Creates dummy element and inserts 2';
+is $res, 'dummy', 'Creates dummy element and inserts 2';
 
 my $data   = $schema->load;
-my $dumped = catfile( qw(t dumped.xml)   );
-my $pofile = catfile( qw(t locale de LC_MESSAGES dumped.po) );
+my $dumped = catfile( qw( t dumped.json ) );
+my $pofile = catfile( qw( t locale de LC_MESSAGES dumped.po ) );
 
 $schema->dump( { data => $data, path => $dumped } );
 
-my $gettext = File::Gettext->new( path => $pofile, tempdir => q(t) );
+my $gettext = File::Gettext->new( path => $pofile, tempdir => 't' );
 
 $data = $gettext->load;
 
@@ -125,21 +120,20 @@ my $text = $data->{ 'po' }->{ $key }->{ 'msgstr' }->[ 0 ];
 
 ok $text eq 'This is a heading', 'Dumps';
 
-$res = test $rs, q(delete), $args;
+$res = test $rs, 'delete', $args;
 
-is $res, q(dummy), 'Deletes dummy element 2';
+is $res, 'dummy', 'Deletes dummy element 2';
 
 done_testing;
 
 # Cleanup
-
 io( $dumped )->unlink;
 io( $pofile )->unlink;
-io( catfile( qw(t locale de LC_MESSAGES default.po)  ) )->unlink;
-io( catfile( qw(t locale en LC_MESSAGES default.po)  ) )->unlink;
-io( catfile( qw(t ipc_srlock.lck) ) )->unlink;
-io( catfile( qw(t ipc_srlock.shm) ) )->unlink;
-io( catfile( qw(t file-dataclass-schema.dat) ) )->unlink;
+io( catfile( qw( t locale de LC_MESSAGES default.po ) ) )->unlink;
+io( catfile( qw( t locale en LC_MESSAGES default.po ) ) )->unlink;
+io( catfile( qw( t ipc_srlock.lck ) ) )->unlink;
+io( catfile( qw( t ipc_srlock.shm ) ) )->unlink;
+io( catfile( qw( t file-dataclass-schema.dat ) ) )->unlink;
 
 # Local Variables:
 # mode: perl

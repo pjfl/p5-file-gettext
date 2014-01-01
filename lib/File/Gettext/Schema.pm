@@ -1,20 +1,20 @@
-# @(#)$Ident: Schema.pm 2013-08-04 08:49 pjf ;
+# @(#)$Ident: Schema.pm 2014-01-01 15:28 pjf ;
 
 package File::Gettext::Schema;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.21.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.22.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
+use Moo;
 use File::DataClass::Constants;
 use File::DataClass::Types  qw( Directory Str Undef );
 use File::Gettext::Constants;
 use File::Gettext::ResultSource;
 use File::Gettext::Storage;
-use Moo;
 use Scalar::Util            qw( blessed );
 use Type::Utils             qw( as coerce declare from enum via );
 
-extends qw(File::DataClass::Schema);
+extends q(File::DataClass::Schema);
 
 my $LanguageType = declare as Str;
 
@@ -29,7 +29,7 @@ has 'localedir' => is => 'ro', isa => Directory, coerce => Directory->coercion,
 around 'BUILDARGS' => sub {
    my ($orig, $class, @args) = @_; my $attr = $orig->( $class, @args );
 
-   $attr->{result_source_class} = q(File::Gettext::ResultSource);
+   $attr->{result_source_class} = 'File::Gettext::ResultSource';
 
    return $attr;
 };
@@ -37,7 +37,7 @@ around 'BUILDARGS' => sub {
 sub BUILD {
    my $self    = shift;
    my $storage = $self->storage;
-   my $class   = q(File::Gettext::Storage);
+   my $class   = 'File::Gettext::Storage';
    my $attrs   = { schema => $self, storage => $storage };
 
    blessed $storage ne $class and $self->storage( $class->new( $attrs ) );
@@ -57,7 +57,7 @@ File::Gettext::Schema - Adds language support to the default schema
 
 =head1 Version
 
-The document describes v0.21.$Rev: 1 $ of L<File::Gettext::Schema>
+The document describes v0.22.$Rev: 1 $ of L<File::Gettext::Schema>
 
 =head1 Synopsis
 
@@ -122,7 +122,7 @@ Peter Flanigan, C<< <Support at RoxSoft.co.uk> >>
 
 =head1 License and Copyright
 
-Copyright (c) 2013 Peter Flanigan. All rights reserved
+Copyright (c) 2014 Peter Flanigan. All rights reserved
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself. See L<perlartistic>

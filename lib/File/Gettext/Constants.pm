@@ -4,7 +4,7 @@ package File::Gettext::Constants;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.21.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.22.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Exporter 5.57 qw( import );
 
@@ -49,7 +49,7 @@ File::Gettext::Constants - Definitions of constant values
 
 =head1 Version
 
-This documents version v0.21.$Rev: 1 $ of L<File::Gettext::Constants>
+This documents version v0.22.$Rev: 1 $ of L<File::Gettext::Constants>
 
 =head1 Synopsis
 
@@ -119,7 +119,7 @@ Peter Flanigan, C<< <Support at RoxSoft.co.uk> >>
 
 =head1 License and Copyright
 
-Copyright (c) 2013 Peter Flanigan. All rights reserved
+Copyright (c) 2014 Peter Flanigan. All rights reserved
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself. See L<perlartistic>

@@ -1,11 +1,12 @@
-# @(#)$Ident: Gettext.pm 2013-08-07 17:28 pjf ;
+# @(#)$Ident: Gettext.pm 2014-01-01 15:24 pjf ;
 
 package File::Gettext;
 
 use 5.010001;
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.21.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.22.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
+use Moo;
 use English                    qw( -no_match_vars );
 use File::DataClass::Constants;
 use File::DataClass::Functions qw( throw );
@@ -13,7 +14,6 @@ use File::DataClass::IO;
 use File::DataClass::Types     qw( ArrayRef Directory HashRef Str Undef );
 use File::Gettext::Constants;
 use File::Spec::Functions      qw( catfile tmpdir );
-use Moo;
 use Type::Utils                qw( as coerce declare from enum via );
 
 extends q(File::DataClass::Schema);
@@ -179,7 +179,7 @@ File::Gettext - Read and write GNU gettext po/mo files
 
 =head1 Version
 
-This documents version v0.21.$Rev: 1 $ of L<File::Gettext>
+This documents version v0.22.$Rev: 1 $ of L<File::Gettext>
 
 =head1 Synopsis
 
@@ -294,7 +294,7 @@ Peter Flanigan, C<< <pjfl@cpan.org> >>
 
 =head1 License and Copyright
 
-Copyright (c) 2013 Peter Flanigan. All rights reserved
+Copyright (c) 2014 Peter Flanigan. All rights reserved
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself. See L<perlartistic>

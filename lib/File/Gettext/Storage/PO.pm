@@ -1,20 +1,20 @@
-# @(#)$Ident: PO.pm 2013-08-04 08:49 pjf ;
+# @(#)$Ident: PO.pm 2013-12-31 01:44 pjf ;
 
 package File::Gettext::Storage::PO;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.21.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.22.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
+use Moo;
 use Date::Format ();
-use Encode qw(decode encode);
+use Encode qw( decode encode );
 use File::DataClass::Constants;
 use File::Gettext::Constants;
-use Moo;
 use MooX::Augment -class;
 
 extends q(File::DataClass::Storage);
 
-has '+extn' => default => q(.po);
+has '+extn' => default => '.po';
 
 augment '_read_file' => sub {
    my ($self, $rdr) = @_;
@@ -58,7 +58,7 @@ sub _read_filter {
          $field and __store_comment( $rec, $line, $field );
       }
       # Field names all begin with the prefix msg
-      elsif (q(msg) eq substr $line, 0, 3) {
+      elsif ('msg' eq substr $line, 0, 3) {
          $key = __store_msgtext( $rec, $line, \$last );
       }
       # Match any continuation lines
@@ -104,7 +104,6 @@ sub _store_record {
    $rec->{labels} = $ctxt[ 0 ].$rec->{msgid}.$ctxt[ 1 ];
    $rec->{_order} = ${ $order_ref }++;
    $data->{ $self->make_key( $rec ) } = $rec;
-
    return;
 }
 
@@ -128,8 +127,7 @@ sub _write_filter {
       for my $attr_name (grep { exists $rec->{ $_ } } @{ $attrs }) {
          my $values = $rec->{ $attr_name }; defined $values or next;
 
-         ref $values eq q(ARRAY) and @{ $values } < 1 and next;
-
+         ref $values eq 'ARRAY' and @{ $values } < 1 and next;
          push @{ $buf }, map { encode( $charset, $_ ) }
                             @{ $self->_get_lines( $attr_name, $values ) };
       }
@@ -162,8 +160,8 @@ sub _default_po_header {
    my $lang       = $defaults->{lang      };
    my $team       = $defaults->{team      };
    my $translator = $defaults->{translator};
-   my $rev_date   = __time2str( "%Y-%m-%d %H:%M%z" );
-   my $year       = __time2str( "%Y" );
+   my $rev_date   = __time2str( '%Y-%m-%d %H:%M%z' );
+   my $year       = __time2str( '%Y' );
 
    return {
       'translator_comment' => join "\n", ( '@(#)$Id'.'$',
@@ -187,7 +185,7 @@ sub _default_po_header {
 sub _get_comment_lines {
    my ($self, $attr_name, $values, $prefix) = @_; my $lines = [];
 
-   $attr_name eq q(flags) and return [ $prefix.SPC.(join q(, ), @{ $values }) ];
+   $attr_name eq 'flags' and return [ $prefix.SPC.(join ', ', @{ $values }) ];
 
    $values =~ m{ [\n] \z }msx and $values .= SPC;
 
@@ -204,7 +202,7 @@ sub _get_lines {
    if ($cpref = __comment_prefix( $attr_name )) {
       $lines = $self->_get_comment_lines( $attr_name, $values, $cpref );
    }
-   elsif (ref $values eq ARRAY) {
+   elsif (ref $values eq 'ARRAY') {
       if (@{ $values } > 1) {
          $lines = $self->_array_split_on_nl( $attr_name, $values );
       }
@@ -281,7 +279,7 @@ sub _get_charset {
 sub __append_msgtext {
    my ($rec, $key, $last, $text) = @_;
 
-   if (ref $rec->{ $key } ne ARRAY) { $rec->{ $key } .= __unquote( $text ) }
+   if (ref $rec->{ $key } ne 'ARRAY') { $rec->{ $key } .= __unquote( $text ) }
    else { $rec->{ $key }->[ $last || 0 ] .= __unquote( $text ) }
 
    return;
@@ -310,10 +308,10 @@ sub __decode_hash {
    for my $k (grep { defined } keys %{ $in }) {
       my $values = $in->{ $k }; defined $values or next;
 
-      if (ref $values eq HASH) {
+      if (ref $values eq 'HASH') {
          $out->{ $k } = __decode_hash( $charset, $values );
       }
-      elsif (ref $values eq ARRAY) {
+      elsif (ref $values eq 'ARRAY') {
          $out->{ $k } = [ map { decode( $charset, $_ ) } @{ $values } ];
       }
       else { $out->{ $k } = decode( $charset, $values ) }
@@ -365,7 +363,7 @@ sub __store_comment {
       push @{ $rec->{ $attr } }, map    { s{ \s+ }{}msx; $_ }
                                  split m{ [,]      }msx, $value;
    }
-   else { $rec->{ $attr } .= $rec->{ $attr } ? "\n".$value : $value }
+   else { $rec->{ $attr } .= $rec->{ $attr } ? "\n${value}" : $value }
 
    return;
 }
@@ -423,7 +421,7 @@ File::Gettext::Storage::PO - Storage class for GNU Gettext portable object forma
 
 =head1 Version
 
-This documents version v0.21.$Rev: 1 $ of L<File::Gettext::Storage::PO>
+This documents version v0.22.$Rev: 1 $ of L<File::Gettext::Storage::PO>
 
 =head1 Synopsis
 
@@ -471,7 +469,7 @@ Peter Flanigan, C<< <Support at RoxSoft.co.uk> >>
 
 =head1 License and Copyright
 
-Copyright (c) 2013 Peter Flanigan. All rights reserved
+Copyright (c) 2014 Peter Flanigan. All rights reserved
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself. See L<perlartistic>
