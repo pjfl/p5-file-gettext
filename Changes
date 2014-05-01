@@ -1,5 +1,7 @@
 Revision history for File::Gettext
 
+          - Fixed unwanted SEP bug in ::Storage::PO::make_key
+
 0.22.1    2014-01-01 15:29:44
           - Uses default exception error stings for NothingUpdated
           - Tests select storage class since JSON is now the default
