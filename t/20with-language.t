@@ -1,11 +1,8 @@
-# @(#)$Ident: 20with-language.t 2014-01-01 15:18 pjf ;
-
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.22.%d', q$Rev: 1 $ =~ /\d+/gmx );
-use File::Spec::Functions   qw( catdir catfile updir );
-use FindBin                 qw( $Bin );
-use lib                 catdir( $Bin, updir, 'lib' );
+use File::Spec::Functions qw( catdir catfile updir );
+use FindBin               qw( $Bin );
+use lib               catdir( $Bin, updir, 'lib' );
 
 use Test::More;
 use Test::Requires { version => 0.88 };
@@ -20,6 +17,7 @@ BEGIN {
 }
 
 use Test::Requires "${perl_ver}";
+use Test::Requires 'Hash::MoreUtils';
 use English qw( -no_match_vars );
 use File::DataClass::IO;
 use Text::Diff;

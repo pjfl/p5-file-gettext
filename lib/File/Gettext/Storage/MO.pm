@@ -1,9 +1,6 @@
-# @(#)$Ident: MO.pm 2014-01-12 21:45 pjf ;
-
 package File::Gettext::Storage::MO;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.22.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 use Moo;
 use Encode                     qw( decode );
@@ -147,10 +144,6 @@ __END__
 =head1 Name
 
 File::Gettext::Storage::MO - Storage class for GNU gettext machine object format
-
-=head1 Version
-
-This documents version v0.22.$Rev: 2 $ of L<File::Gettext::Storage::MO>
 
 =head1 Synopsis
 

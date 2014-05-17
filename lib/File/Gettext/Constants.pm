@@ -1,10 +1,7 @@
-# @(#)$Ident: Constants.pm 2013-07-28 17:57 pjf ;
-
 package File::Gettext::Constants;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.22.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Exporter 5.57 qw( import );
 
@@ -46,10 +43,6 @@ __END__
 =head1 Name
 
 File::Gettext::Constants - Definitions of constant values
-
-=head1 Version
-
-This documents version v0.22.$Rev: 1 $ of L<File::Gettext::Constants>
 
 =head1 Synopsis
 

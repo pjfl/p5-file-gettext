@@ -1,9 +1,6 @@
-# @(#)$Ident: Storage.pm 2014-01-30 00:00 pjf ;
-
 package File::Gettext::Storage;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.22.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 use Moo;
 use File::Basename             qw( basename );
@@ -240,10 +237,6 @@ __END__
 =head1 Name
 
 File::Gettext::Storage - Split/merge language dependent data
-
-=head1 Version
-
-This document describes v0.22.$Rev: 2 $ of L<File::Gettext::Storage>
 
 =head1 Synopsis
 

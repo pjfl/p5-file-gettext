@@ -1,9 +1,6 @@
-# @(#)$Ident: Schema.pm 2014-01-01 15:28 pjf ;
-
 package File::Gettext::Schema;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.22.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Moo;
 use File::DataClass::Constants;
@@ -54,10 +51,6 @@ __END__
 =head1 Name
 
 File::Gettext::Schema - Adds language support to the default schema
-
-=head1 Version
-
-The document describes v0.22.$Rev: 1 $ of L<File::Gettext::Schema>
 
 =head1 Synopsis
 

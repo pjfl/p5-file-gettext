@@ -1,9 +1,6 @@
-# @(#)$Ident: PO.pm 2014-02-01 23:39 pjf ;
-
 package File::Gettext::Storage::PO;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.22.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 use Moo;
 use Date::Format                 ( );
@@ -174,7 +171,7 @@ sub _default_po_header {
                                            '', ),
       flags       => [ 'fuzzy', ],
       msgstr      => {
-         'project_id_version'        => "${appname} ${VERSION}",
+         'project_id_version'        => "${appname} ${File::Gettext::VERSION}",
          'po_revision_date'          => $rev_date,
          'last_translator'           => "${translator} ${email}",
          'language_team'             => "${team} ${email}",
@@ -421,10 +418,6 @@ __END__
 =head1 Name
 
 File::Gettext::Storage::PO - Storage class for GNU Gettext portable object format
-
-=head1 Version
-
-This documents version v0.22.$Rev: 2 $ of L<File::Gettext::Storage::PO>
 
 =head1 Synopsis
 

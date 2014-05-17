@@ -1,9 +1,6 @@
-# @(#)$Ident: ResultSource.pm 2014-01-01 15:24 pjf ;
-
 package File::Gettext::ResultSource;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.22.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Moo;
 use File::DataClass::Types  qw( HashRef );
@@ -21,10 +18,6 @@ __END__
 =head1 Name
 
 File::Gettext::ResultSource - Result source localisation
-
-=head1 Version
-
-The document describes v0.22.$Rev: 1 $ of L<File::Gettext::ResultSource>
 
 =head1 Synopsis
 
