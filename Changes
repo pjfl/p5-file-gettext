@@ -1,5 +1,8 @@
 Revision history for File::Gettext
 
+          - Resultset::create now returns object not id
+          - Replaced ::Result::_resultset with result_source
+
 0.23.1    2014-05-17 13:16:29
           - 39fc0b7c-6bf6-1014-8e34-bbd22f9ba488 Test::Requires Hash::MoreUtils
           - Removed Ident and Version lines

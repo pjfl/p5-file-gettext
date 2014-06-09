@@ -28,7 +28,8 @@ has 'storage' => is => 'ro',   isa => Object,  required => TRUE,
 sub delete {
    my ($self, $path, $result) = @_;
 
-   my $source    = $result->_resultset->source;
+   my $source    = $result->can( 'result_source' )
+                 ? $result->result_source : $result->_resultset->source;
    my $condition = sub { $source->lang_dep->{ $_[ 0 ] } };
    my $deleted   = $self->storage->delete( $path, $result );
    my $rs        = $self->_gettext( $path )->resultset;
@@ -119,7 +120,8 @@ sub update {
 sub _create_or_update {
    my ($self, $path, $result, $updating) = @_;
 
-   my $source    = $result->_resultset->source;
+   my $source    = $result->can( 'result_source' )
+                 ? $result->result_source : $result->_resultset->source;
    my $condition = sub { not $source->lang_dep->{ $_[ 0 ] } };
    my $updated   = $self->storage->create_or_update
       ( $path, $result, $updating, $condition );
@@ -224,7 +226,7 @@ sub __get_attributes {
    my ($condition, $source) = @_;
 
    return grep { not m{ \A _ }msx
-                 and $_ ne 'name'
+                 and $_ ne 'id' and $_ ne 'name'
                  and $condition->( $_ ) } @{ $source->attributes || [] };
 }
 

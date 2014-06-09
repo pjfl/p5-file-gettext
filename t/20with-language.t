@@ -63,13 +63,13 @@ my $rs     = $source->resultset;
 my $args   = { name => 'dummy', columns => 3, heading => 'This is a heading', };
 my $res    = test $rs, 'create', $args;
 
-is $res, 'dummy', 'Creates dummy element and inserts';
+is $res->id, 'dummy', 'Creates dummy element and inserts';
 
 $args->{columns} = '2'; $args->{heading} = 'This is a heading also';
 
 $res = test $rs, 'update', $args;
 
-is $res, 'dummy', 'Can update';
+is $res->id, 'dummy', 'Can update';
 
 $ntfs and $schema->path->close; # See if this fixes winshite
 
@@ -101,7 +101,7 @@ $args->{columns} = 3; $args->{heading} = 'This is a heading';
 
 $res = test $rs, 'create', $args;
 
-is $res, 'dummy', 'Creates dummy element and inserts 2';
+is $res->id, 'dummy', 'Creates dummy element and inserts 2';
 
 my $data   = $schema->load;
 my $dumped = catfile( qw( t dumped.json ) );
