@@ -1,6 +1,6 @@
 package File::Gettext::Storage::PO;
 
-use namespace::sweep;
+use namespace::autoclean;
 
 use Moo;
 use Date::Format                 ( );

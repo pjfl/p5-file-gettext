@@ -1,6 +1,6 @@
 package File::Gettext::Storage::MO;
 
-use namespace::sweep;
+use namespace::autoclean;
 
 use Moo;
 use Encode                     qw( decode );

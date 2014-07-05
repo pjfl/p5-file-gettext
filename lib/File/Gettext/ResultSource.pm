@@ -1,6 +1,6 @@
 package File::Gettext::ResultSource;
 
-use namespace::sweep;
+use namespace::autoclean;
 
 use Moo;
 use File::DataClass::Types  qw( HashRef );

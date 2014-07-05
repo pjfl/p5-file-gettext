@@ -1,8 +1,8 @@
 package File::Gettext;
 
 use 5.010001;
-use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.23.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use namespace::autoclean;
+use version; our $VERSION = qv( sprintf '0.24.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Moo;
 use English                    qw( -no_match_vars );
@@ -25,9 +25,9 @@ coerce $LocaleDir,
    from Undef,    via { __build_localedir( $_ ) };
 
 # Public attributes
-has 'catagory_name'     => is => 'ro', isa => Str, default => q(LC_MESSAGES);
+has 'catagory_name'     => is => 'ro', isa => Str, default => 'LC_MESSAGES';
 
-has 'charset'           => is => 'ro', isa => Str, default => q(iso-8859-1);
+has 'charset'           => is => 'ro', isa => Str, default => 'iso-8859-1';
 
 has 'default_po_header' => is => 'ro', isa => HashRef,
    default              => sub { {
@@ -177,7 +177,7 @@ File::Gettext - Read and write GNU gettext po/mo files
 
 =head1 Version
 
-This documents version v0.23.$Rev: 1 $ of L<File::Gettext>
+This documents version v0.24.$Rev: 1 $ of L<File::Gettext>
 
 =head1 Synopsis
 

@@ -1,6 +1,6 @@
 package File::Gettext::Storage;
 
-use namespace::sweep;
+use namespace::autoclean;
 
 use Moo;
 use File::Basename             qw( basename );
