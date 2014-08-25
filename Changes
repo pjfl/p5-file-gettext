@@ -1,5 +1,8 @@
 Revision history for File::Gettext
 
+          - Added diagnostic to test since
+            f3a3dae7-6bf7-1014-bf26-fc13b95c3ac1
+
 0.24.1    2014-07-05 10:35:52
           - Replace namespace::sweep with namespace::autoclean
           - Resultset::create now returns object not id
