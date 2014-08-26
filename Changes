@@ -1,5 +1,6 @@
 Revision history for File::Gettext
 
+          - Adjusted toolchain for Github
           - Added diagnostic to test since
             f3a3dae7-6bf7-1014-bf26-fc13b95c3ac1
 
