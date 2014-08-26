@@ -1,5 +1,7 @@
 Revision history for File::Gettext
 
+0.25.1    2014-08-26 17:44:28
+          - Updated dependency version on File::DataClass
           - Updated prereqs
           - Added Travis, badges, and MANIFEST to repository
           - Adjusted toolchain for Github
