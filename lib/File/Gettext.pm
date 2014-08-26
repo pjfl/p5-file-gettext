@@ -2,7 +2,7 @@ package File::Gettext;
 
 use 5.010001;
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.24.%d', q$Rev: 3 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.24.%d', q$Rev: 4 $ =~ /\d+/gmx );
 
 use Moo;
 use English                    qw( -no_match_vars );
@@ -171,13 +171,20 @@ __END__
 
 =pod
 
+=begin markdown
+
+[![Build Status](https://travis-ci.org/pjfl/p5-file-gettext.svg?branch=master)](https://travis-ci.org/pjfl/p5-file-gettext)
+[![CPAN version](https://badge.fury.io/pl/File-Gettext.svg)](http://badge.fury.io/pl/File-Gettext)
+
+=end markdown
+
 =head1 Name
 
 File::Gettext - Read and write GNU gettext po/mo files
 
 =head1 Version
 
-This documents version v0.24.$Rev: 3 $ of L<File::Gettext>
+This documents version v0.24.$Rev: 4 $ of L<File::Gettext>
 
 =head1 Synopsis
 

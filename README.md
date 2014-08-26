@@ -1,10 +1,13 @@
+[![Build Status](https://travis-ci.org/pjfl/p5-file-gettext.svg?branch=master)](https://travis-ci.org/pjfl/p5-file-gettext)
+[![CPAN version](https://badge.fury.io/pl/File-Gettext.svg)](http://badge.fury.io/pl/File-Gettext)
+
 # Name
 
 File::Gettext - Read and write GNU gettext po/mo files
 
 # Version
 
-This documents version v0.24.$Rev: 3 $ of [File::Gettext](https://metacpan.org/pod/File::Gettext)
+This documents version v0.24.$Rev: 4 $ of [File::Gettext](https://metacpan.org/pod/File::Gettext)
 
 # Synopsis
 
