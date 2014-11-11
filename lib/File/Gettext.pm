@@ -2,7 +2,7 @@ package File::Gettext;
 
 use 5.010001;
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.25.%d', q$Rev: 3 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.26.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Moo;
 use English                    qw( -no_match_vars );
@@ -184,7 +184,7 @@ File::Gettext - Read and write GNU gettext po/mo files
 
 =head1 Version
 
-This documents version v0.25.$Rev: 3 $ of L<File::Gettext>
+This documents version v0.26.$Rev: 1 $ of L<File::Gettext>
 
 =head1 Synopsis
 
@@ -247,7 +247,7 @@ Returns the path to the po/mo file for the specified language
 
 =head2 load
 
-This method modifier adds the pluralization function to the return data
+This method modifier adds the pluralisation function to the return data
 
 =head2 resultset
 

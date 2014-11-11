@@ -7,7 +7,7 @@ File::Gettext - Read and write GNU gettext po/mo files
 
 # Version
 
-This documents version v0.25.$Rev: 1 $ of [File::Gettext](https://metacpan.org/pod/File::Gettext)
+This documents version v0.26.$Rev: 1 $ of [File::Gettext](https://metacpan.org/pod/File::Gettext)
 
 # Synopsis
 
@@ -66,7 +66,7 @@ Returns the path to the po/mo file for the specified language
 
 ## load
 
-This method modifier adds the pluralization function to the return data
+This method modifier adds the pluralisation function to the return data
 
 ## resultset
 

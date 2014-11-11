@@ -9,12 +9,12 @@ use Test::More;
 use Test::Requires { version => 0.88 };
 use Module::Build;
 
-my $notes = {}; my $perl_ver;
+my $builder; my $notes = {}; my $perl_ver;
 
 BEGIN {
-   my $builder = eval { Module::Build->current };
-      $builder and $notes = $builder->notes;
-      $perl_ver = $notes->{min_perl_version} || 5.008;
+   $builder   = eval { Module::Build->current };
+   $builder and $notes = $builder->notes;
+   $perl_ver  = $notes->{min_perl_version} || 5.008;
 }
 
 use Test::Requires "${perl_ver}";
@@ -22,6 +22,11 @@ use Test::Requires 'Hash::MoreUtils';
 use English qw( -no_match_vars );
 use File::DataClass::IO;
 use Text::Diff;
+
+my $osname = lc $OSNAME;
+my $ntfs   = $osname eq 'mswin32' || $osname eq 'cygwin' ? 1 : 0;
+
+$ntfs and plan skip_all => 'File system not supported';
 
 use_ok 'File::Gettext';
 

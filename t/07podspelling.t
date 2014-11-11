@@ -42,5 +42,6 @@ flanigan
 buildargs
 File::Gettext
 gettext
+merchantability
 resultset
 subdirectory

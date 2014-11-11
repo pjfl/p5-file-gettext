@@ -1,5 +1,6 @@
 Revision history for File::Gettext
 
+0.26.1    2014-11-11 18:17:33
 0.25.1    2014-08-26 17:44:28
           - Updated dependency version on File::DataClass
           - Updated prereqs
