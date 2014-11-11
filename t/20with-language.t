@@ -51,8 +51,6 @@ use_ok 'File::Gettext';
 use_ok 'File::Gettext::Constants';
 use_ok 'File::Gettext::Schema';
 
-my $osname  = lc $OSNAME;
-my $ntfs    = $osname eq 'mswin32' || $osname eq 'cygwin' ? 1 : 0;
 my $default = catfile( qw( t default.json ) );
 my $schema  = File::Gettext::Schema->new
    ( path      => $default,
