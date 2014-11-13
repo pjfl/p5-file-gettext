@@ -10,6 +10,7 @@ requires "namespace::autoclean" => "0.19";
 requires "perl" => "5.010001";
 
 on 'build' => sub {
+  requires "Hash::MoreUtils" => "0.05";
   requires "Module::Build" => "0.4004";
   requires "Test::Requires" => "0.06";
   requires "Text::Diff" => "1.37";

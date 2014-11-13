@@ -11,6 +11,7 @@ my $perl_ver = 5.010001;
 my $name     = 'File-Gettext'; $name =~ s{ - }{::}gmx;
 my $prereqs  = {
   'build_requires' => {
+    'Hash::MoreUtils' => '0.05',
     'Module::Build' => '0.4004',
     'Test::Requires' => '0.06',
     'Text::Diff' => '1.37',
