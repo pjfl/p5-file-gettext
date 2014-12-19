@@ -381,13 +381,13 @@ my $_write_filter = sub {
 };
 
 # Public methods
-sub read_file_raw {
+sub read_from_file {
    my ($self, $rdr) = @_;
 
    return $self->$_read_filter( [ $rdr->chomp->getlines ] );
 };
 
-sub write_file_raw {
+sub write_to_file {
    my ($self, $wtr, $data) = @_;
 
    $wtr->println( @{ $self->$_write_filter( $data ) } );
@@ -437,9 +437,13 @@ Defines these attributes;
 
 =head1 Subroutines/Methods
 
-=head2 read_file_raw
+=head2 read_from_file
 
-=head2 write_file_raw
+Required API method
+
+=head2 write_to_file
+
+Required API method
 
 =head2 decompose_key
 

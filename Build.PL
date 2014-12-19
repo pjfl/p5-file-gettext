@@ -24,12 +24,12 @@ my $prereqs  = {
   'requires' => {
     'Date::Format' => '2.22',
     'Encode' => '2.12',
-    'File::DataClass' => 'v0.46.0',
+    'File::DataClass' => 'v0.53.0',
     'Moo' => '1.006000',
     'Try::Tiny' => '0.22',
     'Type::Tiny' => '1.000002',
-    'Unexpected' => 'v0.30.0',
-    'namespace::autoclean' => '0.19',
+    'Unexpected' => 'v0.35.0',
+    'namespace::autoclean' => '0.22',
     'perl' => '5.010001'
   },
 };
