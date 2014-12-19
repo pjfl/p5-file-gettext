@@ -22,7 +22,6 @@ my $prereqs  = {
     'version' => '0.88'
   },
   'requires' => {
-    'Class::Method::ModifiersX::Augment' => '0.001',
     'Date::Format' => '2.22',
     'Encode' => '2.12',
     'File::DataClass' => 'v0.46.0',

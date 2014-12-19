@@ -1,5 +1,8 @@
 Revision history for File::Gettext
 
+          - Switched to lexical subroutines
+          - Dropped Class::Method::ModifiersX::Augment
+
 0.26.1    2014-11-11 18:17:33
           - Dropped support for NTFS
 

@@ -4,52 +4,48 @@ use namespace::autoclean;
 
 use Moo;
 use Encode                     qw( decode );
-use File::DataClass::Constants;
+use File::DataClass::Constants qw( NUL );
 use File::DataClass::Functions qw( extension_map throw );
-use File::Gettext::Constants;
-use MooX::Augment -class;
+use File::Gettext::Constants   qw( MAGIC_N MAGIC_V PLURAL_SEP );
+
+extension_map '+File::Gettext::Storage::MO' => '.mo';
 
 extends q(File::DataClass::Storage);
 
 has '+extn' => default => '.mo';
 
-augment '_read_file' => sub {
-   my ($self, $rdr) = @_; return $self->_read_filter( $rdr );
-};
+# Private subroutines
+my $_decode = sub {
+   my ($charset, $text) = @_; defined $text or return;
 
-augment '_write_file' => sub {
-   my ($self, $wtr, $data) = @_; return $data;
+   $text = decode( $charset, $text );
+   $text =~ s{ [\\][\'] }{\'}gmsx; $text =~ s{ [\\][\"] }{\"}gmsx;
+   return $text;
 };
-
-extension_map '+File::Gettext::Storage::MO' => '.mo';
 
 # Private methods
-sub _read_filter {
+my $_read_filter = sub {
    my ($self, $rdr) = @_; my $path = $rdr->pathname; my $raw = $rdr->all;
 
-   my $size = length $raw; $size < 28
-      and throw error => 'Path [_1] corrupted', args => [ $path ];
+   my $size = length $raw; $size < 28 and throw 'Path [_1] corrupted', [ $path];
    my %meta = (); my $unpack = 'N';
 
    $meta{magic} = unpack $unpack, substr $raw, 0, 4;
 
    if    ($meta{magic} == MAGIC_V) { $unpack = 'V' }
-   elsif ($meta{magic} != MAGIC_N) {
-      throw error => 'Path [_1] bad magic', args => [ $path ];
-   }
+   elsif ($meta{magic} != MAGIC_N) { throw 'Path [_1] bad magic', [ $path ] }
 
    @meta{ qw( revision num_strings msgids_off msgstrs_off hash_size hash_off ) }
       = unpack( ($unpack x 6), substr $raw, 4, 24 );
 
-   $meta{revision} == 0 or throw error => 'Path [_1 ] invalid version',
-                                 args  => [ $path ];
+   $meta{revision} == 0 or throw 'Path [_1 ] invalid version', [ $path ];
 
    my $nstrs = $meta{num_strings};
 
    $meta{msgids_off}  + 4 * $nstrs > $size and
-      throw error => 'Path [_1] bad msgid offset',  args => [ $path ];
+      throw 'Path [_1] bad msgid offset', [ $path ];
    $meta{msgstrs_off} + 4 * $nstrs > $size and
-      throw error => 'Path [_1] bad msgstr offset', args => [ $path ];
+      throw 'Path [_1] bad msgstr offset', [ $path ];
 
    my @orig_tab  = unpack( ($unpack x (2 * $nstrs)),
       substr $raw, $meta{msgids_off},  8 * $nstrs );
@@ -65,9 +61,9 @@ sub _read_filter {
       my $trans_offset = $trans_tab[ $count + 1 ];
 
       $orig_offset  + $orig_length  > $size
-         and throw error => 'Path [_1] bad key length', args => [ $path ];
+         and throw 'Path [_1] bad key length', [ $path ];
       $trans_offset + $trans_length > $size
-         and throw error => 'Path [_1] bad text length', args => [ $path ];
+         and throw 'Path [_1] bad text length', [ $path ];
 
       my @origs = split m{ $sep }mx, substr $raw, $orig_offset,  $orig_length;
       my @trans = split m{ $sep }mx, substr $raw, $trans_offset, $trans_length;
@@ -101,13 +97,13 @@ sub _read_filter {
    my $tmp     = $messages; $messages = {};
 
    for my $key (grep { $_ } keys %{ $tmp }) {
-      my $msg = $tmp->{ $key }; my $id = __decode( $charset, $key );
+      my $msg = $tmp->{ $key }; my $id = $_decode->( $charset, $key );
 
-      $messages->{ $id } = { msgstr => [ map { __decode( $charset, $_ ) }
+      $messages->{ $id } = { msgstr => [ map { $_decode->( $charset, $_ ) }
                                             @{ $msg->{msgstr} || [] } ] };
       defined $msg->{msgid_plural}
          and $messages->{ $id }->{msgid_plural}
-            = __decode( $charset, $msg->{msgid_plural} );
+            = $_decode->( $charset, $msg->{msgid_plural} );
    }
 
    my $code = $header->{plural_forms} || NUL;
@@ -124,15 +120,15 @@ sub _read_filter {
    return { meta      => \%meta,
             mo        => $messages,
             po_header => { msgid => NUL, msgstr => $header } };
+};
+
+# Public methods
+sub read_file_raw {
+   my ($self, $rdr) = @_; return $self->$_read_filter( $rdr );
 }
 
-# Private subroutines
-sub __decode {
-   my ($charset, $text) = @_; defined $text or return;
-
-   $text = decode( $charset, $text );
-   $text =~ s{ [\\][\'] }{\'}gmsx; $text =~ s{ [\\][\"] }{\"}gmsx;
-   return $text;
+sub write_file_raw {
+   my ($self, $wtr, $data) = @_; return $data;
 }
 
 1;
@@ -149,17 +145,33 @@ File::Gettext::Storage::MO - Storage class for GNU gettext machine object format
 
 =head1 Description
 
-=head1 Subroutines/Methods
+Storage class for GNU gettext machine object format
 
 =head1 Configuration and Environment
 
-=head2 C<extn>
+Defines these attributes;
+
+=over 3
+
+=item C<extn>
+
+=back
+
+=head1 Subroutines/Methods
+
+=head2 read_file_raw
+
+=head2 write_file_raw
 
 =head1 Diagnostics
+
+None
 
 =head1 Dependencies
 
 =over 3
+
+=item L<File::DataClass>
 
 =item L<Moo>
 

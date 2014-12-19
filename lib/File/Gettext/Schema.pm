@@ -3,13 +3,13 @@ package File::Gettext::Schema;
 use namespace::autoclean;
 
 use Moo;
-use File::DataClass::Constants;
-use File::DataClass::Types  qw( Directory Str Undef );
-use File::Gettext::Constants;
+use File::DataClass::Constants qw( LANG );
+use File::DataClass::Types     qw( Directory Str Undef );
+use File::Gettext::Constants   qw( LOCALE_DIRS );
 use File::Gettext::ResultSource;
 use File::Gettext::Storage;
-use Scalar::Util            qw( blessed );
-use Type::Utils             qw( as coerce declare from enum via );
+use Scalar::Util               qw( blessed );
+use Type::Utils                qw( as coerce declare from enum via );
 
 extends q(File::DataClass::Schema);
 

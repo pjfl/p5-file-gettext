@@ -1,4 +1,3 @@
-requires "Class::Method::ModifiersX::Augment" => "0.001";
 requires "Date::Format" => "2.22";
 requires "Encode" => "2.12";
 requires "File::DataClass" => "v0.46.0";
