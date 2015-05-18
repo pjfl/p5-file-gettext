@@ -2,7 +2,6 @@ package File::Gettext::Storage;
 
 use namespace::autoclean;
 
-use Moo;
 use File::Basename             qw( basename );
 use File::DataClass::Constants qw( EXCEPTION_CLASS FALSE NUL TRUE );
 use File::DataClass::Functions qw( is_stale merge_file_data throw );
@@ -10,6 +9,7 @@ use File::DataClass::Types     qw( Object );
 use File::Gettext;
 use Try::Tiny;
 use Unexpected::Functions      qw( NothingUpdated Unspecified );
+use Moo;
 
 has 'gettext' => is => 'lazy', isa => Object, builder => sub {
    File::Gettext->new( builder     => $_[ 0 ]->schema,
@@ -35,7 +35,7 @@ my $_get_attributes = sub {
 
 # Private methods
 my $_extn = sub {
-   my $extn = (split m{ \. }mx, ($_[ 1 ] || NUL))[ -1 ];
+   my $extn = (split m{ \. }mx, (NUL.$_[ 1 ] || NUL))[ -1 ];
 
    return $extn ? ".${extn}" : $_[ 0 ]->extn;
 };
@@ -86,7 +86,9 @@ my $_create_or_update = sub {
 };
 
 my $_get_key_and_newest = sub {
-   my ($self, $paths) = @_; my $key; my $newest = 0; my $valid = TRUE;
+   my ($self, $paths) = @_;
+
+   my $gettext = $self->gettext; my $key; my $newest = 0; my $valid = TRUE;
 
    for my $path (grep { length } map { "${_}" } @{ $paths }) {
       $key .= $key ? "~${path}" : $path;
@@ -97,19 +99,19 @@ my $_get_key_and_newest = sub {
       else { $valid = FALSE }
 
       my $file      = basename( "${path}", $self->$_extn( $path ) );
-      my $lang_path = $self->gettext->get_path( $self->lang, $file );
+      my $lang_file = $gettext->get_lang_file( $self->lang, $file )->pathname;
 
-      if (defined ($mtime = $self->cache->get_mtime( "${lang_path}" ))) {
+      if (defined ($mtime = $self->cache->get_mtime( $lang_file ))) {
          if ($mtime) {
-            $key .= $key ? "~${lang_path}" : $lang_path;
+            $key .= $key ? "~${lang_file}" : $lang_file;
             $mtime > $newest and $newest = $mtime;
          }
       }
       else {
-         if (-f $lang_path) {
-            $key .= $key ? "~${lang_path}" : $lang_path; $valid = FALSE;
+         if (-f $lang_file) {
+            $key .= $key ? "~${lang_file}" : $lang_file; $valid = FALSE;
          }
-         else { $self->cache->set_mtime( "${lang_path}", 0 ) }
+         else { $self->cache->set_mtime( $lang_file, 0 ) }
       }
    }
 
@@ -163,7 +165,7 @@ sub dump {
    my ($self, $path, $data) = @_; $self->validate_params( $path, TRUE );
 
    my $gettext      = $self->$_gettext( $path );
-   my $gettext_data = $gettext->path->is_file ? $gettext->load : {};
+   my $gettext_data = $gettext->path->exists ? $gettext->load : {};
 
    for my $source (values %{ $self->schema->source_registrations }) {
       my $element = $source->name; my $element_ref = $data->{ $element };
@@ -336,7 +338,7 @@ Peter Flanigan, C<< <pjfl@cpan.org> >>
 
 =head1 License and Copyright
 
-Copyright (c) 2014 Peter Flanigan. All rights reserved
+Copyright (c) 2015 Peter Flanigan. All rights reserved
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself. See L<perlartistic>

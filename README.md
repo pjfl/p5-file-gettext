@@ -1,5 +1,8 @@
-[![Build Status](https://travis-ci.org/pjfl/p5-file-gettext.svg?branch=master)](https://travis-ci.org/pjfl/p5-file-gettext)
-[![CPAN version](https://badge.fury.io/pl/File-Gettext.svg)](http://badge.fury.io/pl/File-Gettext)
+<div>
+    <a href="https://travis-ci.org/pjfl/p5-file-gettext"><img src="https://travis-ci.org/pjfl/p5-file-gettext.svg?branch=master" alt="Travis CI Badge"></a>
+    <a href="http://badge.fury.io/pl/File-Gettext"><img src="https://badge.fury.io/pl/File-Gettext.svg" alt="CPAN Badge"></a>
+    <a href="http://cpants.cpanauthors.org/dist/File-Gettext"><img src="http://cpants.cpanauthors.org/dist/File-Gettext.png" alt="Kwalitee Badge"></a>
+</div>
 
 # Name
 
@@ -7,7 +10,7 @@ File::Gettext - Read and write GNU gettext po/mo files
 
 # Version
 
-This documents version v0.27.$Rev: 1 $ of [File::Gettext](https://metacpan.org/pod/File::Gettext)
+This documents version v0.27.$Rev: 2 $ of [File::Gettext](https://metacpan.org/pod/File::Gettext)
 
 # Synopsis
 
@@ -58,9 +61,9 @@ Defines the following attributes;
 
 # Subroutines/Methods
 
-## get\_path
+## get\_lang\_file
 
-    $gettext->get_path( $lang, $file );
+    $gettext->get_lang_file( $lang, $file );
 
 Returns the path to the po/mo file for the specified language
 
@@ -113,7 +116,7 @@ Peter Flanigan, `<pjfl@cpan.org>`
 
 # License and Copyright
 
-Copyright (c) 2014 Peter Flanigan. All rights reserved
+Copyright (c) 2015 Peter Flanigan. All rights reserved
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself. See [perlartistic](https://metacpan.org/pod/perlartistic)

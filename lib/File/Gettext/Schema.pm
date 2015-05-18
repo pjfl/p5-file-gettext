@@ -2,14 +2,14 @@ package File::Gettext::Schema;
 
 use namespace::autoclean;
 
-use Moo;
-use File::DataClass::Constants qw( LANG );
+use File::DataClass::Constants qw( LANG TRUE );
 use File::DataClass::Types     qw( Directory Str Undef );
 use File::Gettext::Constants   qw( LOCALE_DIRS );
 use File::Gettext::ResultSource;
 use File::Gettext::Storage;
 use Scalar::Util               qw( blessed );
 use Type::Utils                qw( as coerce declare from enum via );
+use Moo;
 
 extends q(File::DataClass::Schema);
 
@@ -17,10 +17,10 @@ my $LanguageType = declare as Str;
 
 coerce $LanguageType, from Undef, via { LANG };
 
-has 'lang'      => is => 'rw', isa => $LanguageType,
-   coerce       => $LanguageType->coercion, default => LANG;
+has 'lang'      => is => 'rw', isa => $LanguageType, coerce => TRUE,
+   default      => LANG;
 
-has 'localedir' => is => 'ro', isa => Directory, coerce => Directory->coercion,
+has 'localedir' => is => 'ro', isa => Directory, coerce => TRUE,
    default      => sub { LOCALE_DIRS->[ 0 ] };
 
 around 'BUILDARGS' => sub {
@@ -115,7 +115,7 @@ Peter Flanigan, C<< <pjfl@cpan.org> >>
 
 =head1 License and Copyright
 
-Copyright (c) 2014 Peter Flanigan. All rights reserved
+Copyright (c) 2015 Peter Flanigan. All rights reserved
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself. See L<perlartistic>

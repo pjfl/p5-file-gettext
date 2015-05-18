@@ -22,13 +22,13 @@ my $prereqs  = {
     'version' => '0.88'
   },
   'requires' => {
-    'Date::Format' => '2.22',
-    'Encode' => '2.12',
-    'File::DataClass' => 'v0.53.0',
-    'Moo' => '1.006000',
+    'Date::Format' => '2.24',
+    'Encode' => '2.67',
+    'File::DataClass' => 'v0.61.0',
+    'Moo' => '2.000001',
     'Try::Tiny' => '0.22',
     'Type::Tiny' => '1.000002',
-    'Unexpected' => 'v0.35.0',
+    'Unexpected' => 'v0.38.0',
     'namespace::autoclean' => '0.22',
     'perl' => '5.010001'
   },

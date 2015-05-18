@@ -1,5 +1,9 @@
 Revision history for File::Gettext
 
+          - Method get_lang_file returns an object
+          - Gettext get_path renamed to get_lang_file
+          - Prereq badges and copyright year
+
 0.27.1    2014-12-19 13:13:01
           - Storage API methods now called read_from_file and write_to_file
           - Switched to lexical subroutines

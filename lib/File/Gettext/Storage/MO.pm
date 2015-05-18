@@ -2,11 +2,11 @@ package File::Gettext::Storage::MO;
 
 use namespace::autoclean;
 
-use Moo;
 use Encode                     qw( decode );
 use File::DataClass::Constants qw( NUL );
 use File::DataClass::Functions qw( extension_map throw );
 use File::Gettext::Constants   qw( MAGIC_N MAGIC_V PLURAL_SEP );
+use Moo;
 
 extension_map '+File::Gettext::Storage::MO' => '.mo';
 
@@ -197,7 +197,7 @@ Peter Flanigan, C<< <pjfl@cpan.org> >>
 
 =head1 License and Copyright
 
-Copyright (c) 2014 Peter Flanigan. All rights reserved
+Copyright (c) 2015 Peter Flanigan. All rights reserved
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself. See L<perlartistic>

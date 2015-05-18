@@ -2,18 +2,18 @@ package File::Gettext;
 
 use 5.010001;
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.27.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.27.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
-use Moo;
 use English                    qw( -no_match_vars );
 use File::DataClass::Constants qw( EXCEPTION_CLASS FALSE NUL SPC TRUE );
 use File::DataClass::Functions qw( throw );
 use File::DataClass::IO        qw( io );
 use File::DataClass::Types     qw( ArrayRef Directory HashRef Str Undef );
 use File::Gettext::Constants   qw( LOCALE_DIRS );
-use File::Spec::Functions      qw( catfile tmpdir );
+use File::Spec::Functions      qw( tmpdir );
 use Type::Utils                qw( as coerce declare from enum via );
 use Unexpected::Functions      qw( Unspecified );
+use Moo;
 
 extends q(File::DataClass::Schema);
 
@@ -23,11 +23,11 @@ my $_build_localedir = sub {
 
    my $io; $dir and $io = io( $dir ) and $io->is_dir and return $io;
 
-   for $dir (map { io( $_ ) } @{ LOCALE_DIRS() }) {
-      $dir->is_dir and return $dir;
+   for $dir (map { io $_ } @{ LOCALE_DIRS() }) {
+      $dir->exists and $dir->is_dir and return $dir;
    }
 
-   return io( tmpdir() );
+   return io tmpdir();
 };
 
 my $LocaleDir  = declare as Directory;
@@ -67,8 +67,8 @@ has 'header_key_table'  => is => 'ro', isa => HashRef,
       content_transfer_encoding => [ 9,  'Content-Transfer-Encoding' ],
       plural_forms              => [ 10, 'Plural-Forms'              ], } };
 
-has 'localedir'      => is => 'ro', isa => $LocaleDir,
-   coerce            => $LocaleDir->coercion, default => NUL;
+has 'localedir'      => is => 'ro', isa => $LocaleDir, coerce => TRUE,
+   default           => NUL;
 
 has '+result_source_attributes' =>
    default           => sub { {
@@ -89,15 +89,14 @@ has 'source_name'    => is => 'ro', isa => $SourceType,
    default           => 'po', trigger => TRUE;
 
 # Private methods
-my $_get_path_io = sub {
-   return io( $_[ 0 ]->get_path( $_[ 1 ], $_[ 2 ] ) );
-};
-
 my $_is_file_or_log_debug = sub {
-   my ($self, $path) = @_; $path->is_file and return TRUE;
+   my ($self, $path) = @_;
 
-   $self->log->debug( 'Path '.$path->pathname.' not found' );
+   $path->exists or ($self->log->debug( 'Path '.$path->pathname.' not found' )
+                     and return FALSE);
+   $path->is_file    and return TRUE;
 
+   $self->log->debug( 'Path '.$path->pathname.' not a file' );
    return FALSE;
 };
 
@@ -114,7 +113,7 @@ around 'load' => sub {
    my ($orig, $self, $lang, @names) = @_;
 
    my @paths     = grep { $self->$_is_file_or_log_debug( $_ ) }
-                   map  { $self->$_get_path_io( $lang, $_ ) } @names;
+                   map  { $self->get_lang_file( $lang, $_ ) } @names;
    my $data      = $orig->( $self, @paths );
    my $po_header = exists $data->{po_header}
                  ? $data->{po_header}->{msgstr} || {} : {};
@@ -149,22 +148,23 @@ sub _trigger_source_name {
    my ($self, $source) = @_;
 
    $source eq 'mo' and $self->storage_class( '+File::Gettext::Storage::MO' );
+   $source eq 'po' and $self->storage_class( '+File::Gettext::Storage::PO' );
 
    return;
 }
 
 # Public methods
-sub get_path {
+sub get_lang_file {
    my ($self, $lang, $file) = @_; my $extn = $self->storage->extn;
 
    $lang or throw Unspecified, [ 'language' ];
    $file or throw Unspecified, [ 'language file path' ];
 
-   return catfile( $self->localedir, $lang, $self->catagory_name, $file.$extn );
+   return $self->localedir->catfile( $lang, $self->catagory_name, $file.$extn );
 }
 
 sub set_path {
-   my ($self, @rest) = @_; return $self->path( $self->$_get_path_io( @rest ) );
+   my $self = shift; return $self->path( $self->get_lang_file( @_ ) );
 }
 
 1;
@@ -173,12 +173,13 @@ __END__
 
 =pod
 
-=begin markdown
+=begin html
 
-[![Build Status](https://travis-ci.org/pjfl/p5-file-gettext.svg?branch=master)](https://travis-ci.org/pjfl/p5-file-gettext)
-[![CPAN version](https://badge.fury.io/pl/File-Gettext.svg)](http://badge.fury.io/pl/File-Gettext)
+<a href="https://travis-ci.org/pjfl/p5-file-gettext"><img src="https://travis-ci.org/pjfl/p5-file-gettext.svg?branch=master" alt="Travis CI Badge"></a>
+<a href="http://badge.fury.io/pl/File-Gettext"><img src="https://badge.fury.io/pl/File-Gettext.svg" alt="CPAN Badge"></a>
+<a href="http://cpants.cpanauthors.org/dist/File-Gettext"><img src="http://cpants.cpanauthors.org/dist/File-Gettext.png" alt="Kwalitee Badge"></a>
 
-=end markdown
+=end html
 
 =head1 Name
 
@@ -186,7 +187,7 @@ File::Gettext - Read and write GNU gettext po/mo files
 
 =head1 Version
 
-This documents version v0.27.$Rev: 1 $ of L<File::Gettext>
+This documents version v0.27.$Rev: 2 $ of L<File::Gettext>
 
 =head1 Synopsis
 
@@ -241,9 +242,9 @@ Either F<po> or F<mo>. Defaults to F<po>
 
 =head1 Subroutines/Methods
 
-=head2 get_path
+=head2 get_lang_file
 
-   $gettext->get_path( $lang, $file );
+   $gettext->get_lang_file( $lang, $file );
 
 Returns the path to the po/mo file for the specified language
 
@@ -301,7 +302,7 @@ Peter Flanigan, C<< <pjfl@cpan.org> >>
 
 =head1 License and Copyright
 
-Copyright (c) 2014 Peter Flanigan. All rights reserved
+Copyright (c) 2015 Peter Flanigan. All rights reserved
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself. See L<perlartistic>
