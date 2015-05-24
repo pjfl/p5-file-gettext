@@ -1,6 +1,6 @@
 requires "Date::Format" => "2.24";
 requires "Encode" => "2.67";
-requires "File::DataClass" => "v0.61.0";
+requires "File::DataClass" => "v0.62.0";
 requires "Moo" => "2.000001";
 requires "Try::Tiny" => "0.22";
 requires "Type::Tiny" => "1.000002";
