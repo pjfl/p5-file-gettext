@@ -6,11 +6,11 @@
 
 # Name
 
-File::Gettext - Read and write GNU gettext po/mo files
+File::Gettext - Read and write GNU Gettext po / mo files
 
 # Version
 
-This documents version v0.27.$Rev: 2 $ of [File::Gettext](https://metacpan.org/pod/File::Gettext)
+This documents version v0.28.$Rev: 1 $ of [File::Gettext](https://metacpan.org/pod/File::Gettext)
 
 # Synopsis
 
