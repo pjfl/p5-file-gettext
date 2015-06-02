@@ -43,5 +43,7 @@ buildargs
 File::Gettext
 gettext
 merchantability
+mo
+po
 resultset
 subdirectory
