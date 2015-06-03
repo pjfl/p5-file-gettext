@@ -1,5 +1,9 @@
 Revision history for File::Gettext
 
+0.29.1    2015-06-03 21:09:05
+          - Disabled testing on broken smoker
+            18d8a57e-0a22-11e5-9d49-e60ed23c8333
+
 0.28.1    2015-06-02 16:03:23
           - Updated prereqs
           - Method get_lang_file returns an object
