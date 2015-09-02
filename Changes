@@ -1,5 +1,7 @@
 Revision history for File::Gettext
 
+          - Toolchain update
+
 0.29.1    2015-06-03 21:09:05
           - Disabled testing on broken smoker
             18d8a57e-0a22-11e5-9d49-e60ed23c8333

@@ -1,11 +1,6 @@
 Build.PL
 Changes
-LICENSE
 MANIFEST
-META.json
-META.yml
-README
-SIGNATURE
 lib/File/Gettext.pm
 lib/File/Gettext/Constants.pm
 lib/File/Gettext/ResultSource.pm
@@ -13,7 +8,6 @@ lib/File/Gettext/Schema.pm
 lib/File/Gettext/Storage.pm
 lib/File/Gettext/Storage/MO.pm
 lib/File/Gettext/Storage/PO.pm
-t/01always_pass.t
 t/02pod.t
 t/03podcoverage.t
 t/05kwalitee.t
@@ -21,6 +15,7 @@ t/06yaml.t
 t/07podspelling.t
 t/10test_script.t
 t/20with-language.t
+t/boilerplate.pm
 t/default.json
 t/existing.mo
 t/existing.po

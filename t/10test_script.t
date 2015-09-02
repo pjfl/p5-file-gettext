@@ -1,29 +1,11 @@
-use strict;
-use warnings;
-use File::Spec::Functions qw( catdir catfile updir );
-use FindBin               qw( $Bin );
-use lib               catdir( $Bin, updir, 'lib' );
+use t::boilerplate;
 use utf8;
 
 use Test::More;
-use Test::Requires { version => 0.88 };
-use Module::Build;
-use Sys::Hostname;
-
-my $builder; my $notes; my $perl_ver;
-
-BEGIN {
-   $builder  = eval { Module::Build->current };
-   $notes    = $builder ? $builder->notes : {};
-   $perl_ver = $notes->{min_perl_version} || 5.008;
-   lc hostname eq 'davids-macbook-pro-2.local'
-      and plan skip_all => 'Broken smoker';
-}
-
-use Test::Requires "${perl_ver}";
 use Test::Requires 'Hash::MoreUtils';
 use English qw( -no_match_vars );
 use File::DataClass::IO;
+use File::Spec::Functions qw( catfile );
 use Text::Diff;
 
 my $osname = lc $OSNAME;
