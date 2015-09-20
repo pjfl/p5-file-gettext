@@ -1,5 +1,6 @@
 Revision history for File::Gettext
 
+          - Short circuit load if files do not exist
           - Toolchain update
 
 0.29.1    2015-06-03 21:09:05

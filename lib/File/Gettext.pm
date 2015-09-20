@@ -2,7 +2,7 @@ package File::Gettext;
 
 use 5.010001;
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.29.%d', q$Rev: 2 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.29.%d', q$Rev: 3 $ =~ /\d+/gmx );
 
 use English                    qw( -no_match_vars );
 use File::DataClass::Constants qw( EXCEPTION_CLASS FALSE NUL SPC TRUE );
@@ -112,11 +112,14 @@ around 'resultset' => sub {
 around 'load' => sub {
    my ($orig, $self, $lang, @names) = @_;
 
-   my @paths     = grep { $self->$_is_file_or_log_debug( $_ ) }
-                   map  { $self->get_lang_file( $lang, $_ ) } @names;
-   my $data      = $orig->( $self, @paths );
+   my @paths = grep { $self->$_is_file_or_log_debug( $_ ) }
+               map  { $self->get_lang_file( $lang,   $_ ) } @names;
+
+   not $paths[ 0 ] and not $self->path and return {};
+
+   my $data  = $orig->( $self, @paths );
    my $po_header = exists $data->{po_header}
-                 ? $data->{po_header}->{msgstr} || {} : {};
+                 ? $data->{po_header}->{msgstr} // {} : {};
    my $plural_func;
 
    # This is here because of the code ref. Cannot serialize (cache) a code ref
@@ -187,7 +190,7 @@ File::Gettext - Read and write GNU Gettext po / mo files
 
 =head1 Version
 
-This documents version v0.29.$Rev: 2 $ of L<File::Gettext>
+This documents version v0.29.$Rev: 3 $ of L<File::Gettext>
 
 =head1 Synopsis
 
