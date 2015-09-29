@@ -12,13 +12,15 @@ use Unexpected::Functions      qw( NothingUpdated Unspecified );
 use Moo;
 
 has 'gettext' => is => 'lazy', isa => Object, builder => sub {
-   File::Gettext->new( builder     => $_[ 0 ]->schema,
-                       cache_class => $_[ 0 ]->cache_class,
-                       localedir   => $_[ 0 ]->localedir );
+   File::Gettext->new( builder       => $_[ 0 ]->schema,
+                       cache_class   => $_[ 0 ]->cache_class,
+                       catagory_name => $_[ 0 ]->catagory_name,
+                       localedir     => $_[ 0 ]->localedir );
 };
 
 has 'schema'  => is => 'ro',   isa => Object,  required => TRUE,
-   handles    => [ qw( cache cache_class lang localedir ) ], weak_ref => TRUE;
+   handles    => [ qw( catagory_name cache cache_class language localedir ) ],
+   weak_ref   => TRUE;
 
 has 'storage' => is => 'ro',   isa => Object,  required => TRUE,
    handles    => [ qw( extn meta_pack meta_unpack
@@ -35,9 +37,11 @@ my $_get_attributes = sub {
 
 # Private methods
 my $_extn = sub {
-   my $extn = (split m{ \. }mx, (NUL.$_[ 1 ] || NUL))[ -1 ];
+   my ($self, $path) = @_; $path //= NUL;
 
-   return $extn ? ".${extn}" : $_[ 0 ]->extn;
+   my $extn = (split m{ \. }mx, ("${path}" // NUL))[ -1 ];
+
+   return $extn ? ".${extn}" : $self->extn;
 };
 
 my $_gettext = sub {
@@ -45,7 +49,7 @@ my $_gettext = sub {
 
    my $gettext = $self->gettext; my $extn = $self->$_extn( $path );
 
-   $gettext->set_path( $self->lang, basename( "${path}", $extn ) );
+   $gettext->set_path( $self->language, basename( "${path}", $extn ) );
 
    return $gettext;
 };
@@ -55,13 +59,13 @@ my $_create_or_update = sub {
 
    my $source    = $result->can( 'result_source' )
                  ? $result->result_source : $result->_resultset->source;
-   my $condition = sub { not $source->lang_dep->{ $_[ 0 ] } };
+   my $condition = sub { not $source->language_dependent->{ $_[ 0 ] } };
    my $updated   = $self->storage->create_or_update
       ( $path, $result, $updating, $condition );
    my $rs        = $self->$_gettext( $path )->resultset;
    my $element   = $source->name;
 
-   $condition = sub { $source->lang_dep->{ $_[ 0 ] } };
+   $condition = sub { $source->language_dependent->{ $_[ 0 ] } };
 
    for my $attr_name ($_get_attributes->( $condition, $source )) {
       my $msgstr = $result->$attr_name() or next;
@@ -99,19 +103,19 @@ my $_get_key_and_newest = sub {
       else { $valid = FALSE }
 
       my $file      = basename( "${path}", $self->$_extn( $path ) );
-      my $lang_file = $gettext->get_lang_file( $self->lang, $file )->pathname;
+      my $lang_file = $gettext->get_lang_file( $self->language, $file );
 
-      if (defined ($mtime = $self->cache->get_mtime( $lang_file ))) {
+      if (defined ($mtime = $self->cache->get_mtime( "${lang_file}" ))) {
          if ($mtime) {
-            $key .= $key ? "~${lang_file}" : $lang_file;
+            $key .= $key ? "~${lang_file}" : "${lang_file}";
             $mtime > $newest and $newest = $mtime;
          }
       }
       else {
-         if (-f $lang_file) {
-            $key .= $key ? "~${lang_file}" : $lang_file; $valid = FALSE;
+         if ($lang_file->exists and $lang_file->is_file) {
+            $key .= $key ? "~${lang_file}" : "${lang_file}"; $valid = FALSE;
          }
-         else { $self->cache->set_mtime( $lang_file, 0 ) }
+         else { $self->cache->set_mtime( "${lang_file}", 0 ) }
       }
    }
 
@@ -144,7 +148,7 @@ sub delete {
 
    my $source    = $result->can( 'result_source' )
                  ? $result->result_source : $result->_resultset->source;
-   my $condition = sub { $source->lang_dep->{ $_[ 0 ] } };
+   my $condition = sub { $source->language_dependent->{ $_[ 0 ] } };
    my $deleted   = $self->storage->delete( $path, $result );
    my $rs        = $self->$_gettext( $path )->resultset;
    my $element   = $source->name;
@@ -171,7 +175,7 @@ sub dump {
       my $element = $source->name; my $element_ref = $data->{ $element };
 
       for my $msgid (keys %{ $element_ref }) {
-         for my $attr_name (keys %{ $source->lang_dep || {} }) {
+         for my $attr_name (keys %{ $source->language_dependent || {} }) {
             my $msgstr = delete $element_ref->{ $msgid }->{ $attr_name }
                       or next;
             my $attrs  = { msgctxt => "${element}.${attr_name}",

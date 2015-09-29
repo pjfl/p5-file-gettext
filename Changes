@@ -1,5 +1,7 @@
 Revision history for File::Gettext
 
+          - Better attribute naming
+            Replaced abbreviation with full length names
           - Short circuit load if files do not exist
           - Toolchain update
 

@@ -39,17 +39,17 @@ use_ok 'File::Gettext::Schema';
 my $default = catfile( qw( t default.json ) );
 my $schema  = File::Gettext::Schema->new
    ( path      => $default,
-     lang      => 'en',
+     language  => 'en',
      localedir => catdir( qw( t locale ) ),
      result_source_attributes => {
         pages => {
            attributes => [ qw( columns heading ) ],
-           lang       => 'en',
-           lang_dep   => { qw( heading 1 ) }, }, },
+           language           => 'en',
+           language_dependent => { qw( heading 1 ) }, }, },
      tempdir => 't' );
 
 isa_ok $schema, 'File::DataClass::Schema';
-is $schema->lang, 'en', 'Has language attribute';
+is $schema->language, 'en', 'Has language attribute';
 
 my $dumped = catfile( qw( t dumped.json ) );
 my $pofile = catfile( qw( t locale de LC_MESSAGES dumped.po ) );
@@ -94,7 +94,7 @@ SKIP: {
 
    ok $e =~ m{ does \s+ not \s+ exist }mx, 'Detects non existing element';
 
-   $schema->lang( 'de' ); $args->{name} = 'dummy';
+   $schema->language( 'de' ); $args->{name} = 'dummy';
 
    $args->{columns} = 3; $args->{heading} = 'This is a heading';
 

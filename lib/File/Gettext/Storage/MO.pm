@@ -10,7 +10,7 @@ use Moo;
 
 extension_map '+File::Gettext::Storage::MO' => '.mo';
 
-extends q(File::DataClass::Storage);
+extends 'File::DataClass::Storage';
 
 has '+extn' => default => '.mo';
 

@@ -3,30 +3,29 @@ package File::Gettext::Schema;
 use namespace::autoclean;
 
 use File::DataClass::Constants qw( LANG TRUE );
-use File::DataClass::Types     qw( Directory Str Undef );
+use File::DataClass::Types     qw( Directory Str );
 use File::Gettext::Constants   qw( LOCALE_DIRS );
 use File::Gettext::ResultSource;
 use File::Gettext::Storage;
 use Scalar::Util               qw( blessed );
-use Type::Utils                qw( as coerce declare from enum via );
 use Moo;
 
-extends q(File::DataClass::Schema);
+extends 'File::DataClass::Schema';
 
-my $LanguageType = declare as Str;
+has 'catagory_name' => is => 'ro', isa => Str, default => 'LC_MESSAGES';
 
-coerce $LanguageType, from Undef, via { LANG };
+has 'language'      => is => 'rw', isa => Str, default => LANG;
 
-has 'lang'      => is => 'rw', isa => $LanguageType, coerce => TRUE,
-   default      => LANG;
-
-has 'localedir' => is => 'ro', isa => Directory, coerce => TRUE,
-   default      => sub { LOCALE_DIRS->[ 0 ] };
+has 'localedir'     => is => 'ro', isa => Directory, coerce => TRUE,
+   default          => sub { LOCALE_DIRS->[ 0 ] };
 
 around 'BUILDARGS' => sub {
    my ($orig, $class, @args) = @_; my $attr = $orig->( $class, @args );
 
    $attr->{result_source_class} = 'File::Gettext::ResultSource';
+
+   # TODO: Deprecation
+   my $lang = delete $attr->{lang}; $attr->{language} //= $lang;
 
    return $attr;
 };
@@ -35,9 +34,9 @@ sub BUILD {
    my $self    = shift;
    my $storage = $self->storage;
    my $class   = 'File::Gettext::Storage';
-   my $attrs   = { schema => $self, storage => $storage };
+   my $attr    = { schema => $self, storage => $storage };
 
-   blessed $storage ne $class and $self->storage( $class->new( $attrs ) );
+   blessed $storage ne $class and $self->storage( $class->new( $attr ) );
 
    return;
 }
@@ -64,7 +63,12 @@ Defines these attributes
 
 =over 3
 
-=item C<lang>
+=item C<catagory_name>
+
+Subdirectory of C<localdir> that contains the F<mo> / F<po> files. Defaults
+to C<LC_MESSAGES>
+
+=item C<language>
 
 The two character language code, e.g. C<de>.
 
@@ -87,11 +91,17 @@ L<File::Gettext::Storage> is created as a proxy for the storage class
 
 =head1 Diagnostics
 
+None
+
 =head1 Dependencies
 
 =over 3
 
+=item L<File::DataClass>
+
 =item L<Moo>
+
+=item L<Type::Tiny>
 
 =back
 

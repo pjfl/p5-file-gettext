@@ -5,9 +5,9 @@ use namespace::autoclean;
 use File::DataClass::Types qw( HashRef );
 use Moo;
 
-extends q(File::DataClass::ResultSource);
+extends 'File::DataClass::ResultSource';
 
-has 'lang_dep' => is => 'ro', isa => HashRef, default => sub { {} };
+has 'language_dependent' => is => 'ro', isa => HashRef, default => sub { {} };
 
 1;
 
@@ -31,14 +31,16 @@ Defines these attributes
 
 =over 3
 
-=item B<lang_dep>
+=item C<language_dependent>
 
-Is a hash ref of language dependent attributes names. The values a just set
-to C<TRUE>
+Is a hash reference of language dependent attributes names. The values are just
+set to true
 
 =back
 
 =head1 Subroutines/Methods
+
+None
 
 =head1 Diagnostics
 

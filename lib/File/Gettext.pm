@@ -2,7 +2,7 @@ package File::Gettext;
 
 use 5.010001;
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.29.%d', q$Rev: 3 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.29.%d', q$Rev: 4 $ =~ /\d+/gmx );
 
 use English                    qw( -no_match_vars );
 use File::DataClass::Constants qw( EXCEPTION_CLASS FALSE NUL SPC TRUE );
@@ -15,7 +15,7 @@ use Type::Utils                qw( as coerce declare from enum via );
 use Unexpected::Functions      qw( Unspecified );
 use Moo;
 
-extends q(File::DataClass::Schema);
+extends 'File::DataClass::Schema';
 
 # Private functions
 my $_build_localedir = sub {
@@ -142,7 +142,7 @@ around 'load' => sub {
    }
 
    # Default is Germanic plural (which is incorrect for French).
-   $data->{plural_func} = $plural_func || sub { (2, shift > 1) };
+   $data->{plural_func} = $plural_func // sub { (2, shift > 1) };
 
    return $data;
 };
@@ -158,12 +158,16 @@ sub _trigger_source_name {
 
 # Public methods
 sub get_lang_file {
-   my ($self, $lang, $file) = @_; my $extn = $self->storage->extn;
+   my ($self, $lang, $file) = @_;
 
    $lang or throw Unspecified, [ 'language' ];
    $file or throw Unspecified, [ 'language file path' ];
 
-   return $self->localedir->catfile( $lang, $self->catagory_name, $file.$extn );
+   my $dir = $self->localedir; my $extn = $self->storage->extn;
+
+   length $self->catagory_name or return $dir->catfile( $lang, $file.$extn );
+
+   return $dir->catfile( $lang, $self->catagory_name, $file.$extn );
 }
 
 sub set_path {
@@ -190,7 +194,7 @@ File::Gettext - Read and write GNU Gettext po / mo files
 
 =head1 Version
 
-This documents version v0.29.$Rev: 3 $ of L<File::Gettext>
+This documents version v0.29.$Rev: 4 $ of L<File::Gettext>
 
 =head1 Synopsis
 
