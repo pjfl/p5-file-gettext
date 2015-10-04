@@ -1,5 +1,7 @@
 Revision history for File::Gettext
 
+          - Better attribute and method naming
+          - Schema attribute values collected from configuration
           - Switched Travis to a containerised build
           - Better attribute naming
             Replaced abbreviation with full length names

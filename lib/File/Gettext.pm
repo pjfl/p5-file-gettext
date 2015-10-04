@@ -2,7 +2,7 @@ package File::Gettext;
 
 use 5.010001;
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.29.%d', q$Rev: 5 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.29.%d', q$Rev: 6 $ =~ /\d+/gmx );
 
 use English                    qw( -no_match_vars );
 use File::DataClass::Constants qw( EXCEPTION_CLASS FALSE NUL SPC TRUE );
@@ -19,9 +19,7 @@ extends 'File::DataClass::Schema';
 
 # Private functions
 my $_build_localedir = sub {
-   my $dir = shift;
-
-   my $io; $dir and $io = io( $dir ) and $io->is_dir and return $io;
+   my $dir = shift; $dir and $dir = io( $dir ) and $dir->is_dir and return $dir;
 
    for $dir (map { io $_ } @{ LOCALE_DIRS() }) {
       $dir->exists and $dir->is_dir and return $dir;
@@ -40,8 +38,6 @@ coerce $LocaleDir,
 my $SourceType = enum 'SourceType' => [ 'mo', 'po' ];
 
 # Public attributes
-has 'catagory_name'     => is => 'ro', isa => Str, default => 'LC_MESSAGES';
-
 has 'charset'           => is => 'ro', isa => Str, default => 'iso-8859-1';
 
 has 'default_po_header' => is => 'ro', isa => HashRef,
@@ -52,6 +48,8 @@ has 'default_po_header' => is => 'ro', isa => HashRef,
       lang              => 'en',
       team              => 'Translators',
       translator        => 'Athena', } };
+
+has 'gettext_catagory'  => is => 'ro', isa => Str, default => 'LC_MESSAGES';
 
 has 'header_key_table'  => is => 'ro', isa => HashRef,
    default              => sub { {
@@ -92,12 +90,12 @@ has 'source_name'    => is => 'ro', isa => $SourceType,
 my $_is_file_or_log_debug = sub {
    my ($self, $path) = @_;
 
-   $path->exists or ($self->log->debug( 'Path '.$path->pathname.' not found' )
-                     and return FALSE);
-   $path->is_file    and return TRUE;
+   $path->exists  or ($self->log->debug( 'Path '.$path->pathname.' not found' )
+                      and return FALSE);
+   $path->is_file or ($self->log->debug( 'Path '.$path->pathname.' not a file' )
+                      and return FALSE);
 
-   $self->log->debug( 'Path '.$path->pathname.' not a file' );
-   return FALSE;
+   return TRUE;
 };
 
 # Construction
@@ -110,10 +108,10 @@ around 'resultset' => sub {
 };
 
 around 'load' => sub {
-   my ($orig, $self, $lang, @names) = @_;
+   my ($orig, $self, $lang, @files) = @_;
 
    my @paths = grep { $self->$_is_file_or_log_debug( $_ ) }
-               map  { $self->get_lang_file( $lang,   $_ ) } @names;
+               map  { $self->object_file( $lang, $_ ) } @files;
 
    not $paths[ 0 ] and not $self->path and return {};
 
@@ -157,21 +155,24 @@ sub _trigger_source_name {
 }
 
 # Public methods
-sub get_lang_file {
+sub object_file {
    my ($self, $lang, $file) = @_;
 
    $lang or throw Unspecified, [ 'language' ];
-   $file or throw Unspecified, [ 'language file path' ];
+   $file or throw Unspecified, [ 'language file name' ];
 
    my $dir = $self->localedir; my $extn = $self->storage->extn;
 
-   length $self->catagory_name or return $dir->catfile( $lang, $file.$extn );
+   length $self->gettext_catagory or return $dir->catfile( $lang, $file.$extn );
 
-   return $dir->catfile( $lang, $self->catagory_name, $file.$extn );
+   return $dir->catfile( $lang, $self->gettext_catagory, $file.$extn );
 }
 
+# TODO: Deprecated
+*get_lang_file = \&object_file;
+
 sub set_path {
-   my $self = shift; return $self->path( $self->get_lang_file( @_ ) );
+   my $self = shift; return $self->path( $self->object_file( @_ ) );
 }
 
 1;
@@ -194,13 +195,13 @@ File::Gettext - Read and write GNU Gettext po / mo files
 
 =head1 Version
 
-This documents version v0.29.$Rev: 5 $ of L<File::Gettext>
+This documents version v0.29.$Rev: 6 $ of L<File::Gettext>
 
 =head1 Synopsis
 
    use File::Gettext;
 
-   my $domain = File::Gettext->new( $attrs )->load( $lang, @names );
+   my $domain = File::Gettext->new( $attrs )->load( $lang, @files );
 
 =head1 Description
 
@@ -215,11 +216,6 @@ Defines the following attributes;
 
 =over 3
 
-=item C<catagory_name>
-
-Subdirectory of C<localdir> that contains the F<mo> / F<po> files. Defaults
-to C<LC_MESSAGES>
-
 =item C<charset>
 
 Default character set used it the F<mo> / F<po> does not specify one. Defaults
@@ -228,6 +224,12 @@ to C<iso-8859-1>
 =item C<default_po_header>
 
 Default header information used to create new F<po> files
+
+=item C<gettext_catagory>
+
+Subdirectory of a language specific subdirectory of L</localdir> that contains
+the F<mo> / F<po> files. Defaults to C<LC_MESSAGES>. Can be set to the null
+string to eliminate from path
 
 =item C<header_key_table>
 
@@ -249,28 +251,28 @@ Either F<po> or F<mo>. Defaults to F<po>
 
 =head1 Subroutines/Methods
 
-=head2 get_lang_file
-
-   $gettext->get_lang_file( $lang, $file );
-
-Returns the path to the po/mo file for the specified language
-
-=head2 load
+=head2 C<load>
 
 This method modifier adds the pluralisation function to the return data
 
-=head2 resultset
+=head2 C<object_file>
+
+   $gettext->object_file( $lang, $file );
+
+Returns the path to the F<po> / F<mo> file for the specified language
+
+=head2 C<resultset>
 
 A method modifier that provides the result source name to the same method
 in the parent class
 
-=head2 set_path
+=head2 C<set_path>
 
    $gettext->set_path( $lang, $file );
 
 Sets the I<path> attribute on the parent class from C<$lang> and C<$file>
 
-=head2 source
+=head2 C<source>
 
 A method modifier that provides the result source name to the same method
 in the parent class

@@ -12,14 +12,14 @@ use Unexpected::Functions      qw( NothingUpdated Unspecified );
 use Moo;
 
 has 'gettext' => is => 'lazy', isa => Object, builder => sub {
-   File::Gettext->new( builder       => $_[ 0 ]->schema,
-                       cache_class   => $_[ 0 ]->cache_class,
-                       catagory_name => $_[ 0 ]->catagory_name,
-                       localedir     => $_[ 0 ]->localedir );
+   File::Gettext->new( builder          => $_[ 0 ]->schema,
+                       cache_class      => $_[ 0 ]->cache_class,
+                       gettext_catagory => $_[ 0 ]->gettext_catagory,
+                       localedir        => $_[ 0 ]->localedir );
 };
 
 has 'schema'  => is => 'ro',   isa => Object,  required => TRUE,
-   handles    => [ qw( catagory_name cache cache_class language localedir ) ],
+   handles    => [ qw( cache cache_class gettext_catagory language localedir )],
    weak_ref   => TRUE;
 
 has 'storage' => is => 'ro',   isa => Object,  required => TRUE,
@@ -103,7 +103,7 @@ my $_get_key_and_newest = sub {
       else { $valid = FALSE }
 
       my $file      = basename( "${path}", $self->$_extn( $path ) );
-      my $lang_file = $gettext->get_lang_file( $self->language, $file );
+      my $lang_file = $gettext->object_file( $self->language, $file );
 
       if (defined ($mtime = $self->cache->get_mtime( "${lang_file}" ))) {
          if ($mtime) {

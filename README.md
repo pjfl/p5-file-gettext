@@ -10,13 +10,13 @@ File::Gettext - Read and write GNU Gettext po / mo files
 
 # Version
 
-This documents version v0.29.$Rev: 3 $ of [File::Gettext](https://metacpan.org/pod/File::Gettext)
+This documents version v0.29.$Rev: 6 $ of [File::Gettext](https://metacpan.org/pod/File::Gettext)
 
 # Synopsis
 
     use File::Gettext;
 
-    my $domain = File::Gettext->new( $attrs )->load( $lang, @names );
+    my $domain = File::Gettext->new( $attrs )->load( $lang, @files );
 
 # Description
 
@@ -29,11 +29,6 @@ languages
 
 Defines the following attributes;
 
-- `catagory_name`
-
-    Subdirectory of `localdir` that contains the `mo` / `po` files. Defaults
-    to `LC_MESSAGES`
-
 - `charset`
 
     Default character set used it the `mo` / `po` does not specify one. Defaults
@@ -42,6 +37,12 @@ Defines the following attributes;
 - `default_po_header`
 
     Default header information used to create new `po` files
+
+- `gettext_catagory`
+
+    Subdirectory of a language specific subdirectory of ["localdir"](#localdir) that contains
+    the `mo` / `po` files. Defaults to `LC_MESSAGES`. Can be set to the null
+    string to eliminate from path
 
 - `header_key_table`
 
@@ -61,28 +62,28 @@ Defines the following attributes;
 
 # Subroutines/Methods
 
-## get\_lang\_file
-
-    $gettext->get_lang_file( $lang, $file );
-
-Returns the path to the po/mo file for the specified language
-
-## load
+## `load`
 
 This method modifier adds the pluralisation function to the return data
 
-## resultset
+## `object_file`
+
+    $gettext->object_file( $lang, $file );
+
+Returns the path to the `po` / `mo` file for the specified language
+
+## `resultset`
 
 A method modifier that provides the result source name to the same method
 in the parent class
 
-## set\_path
+## `set_path`
 
     $gettext->set_path( $lang, $file );
 
 Sets the _path_ attribute on the parent class from `$lang` and `$file`
 
-## source
+## `source`
 
 A method modifier that provides the result source name to the same method
 in the parent class

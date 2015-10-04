@@ -2,7 +2,8 @@ package File::Gettext::Schema;
 
 use namespace::autoclean;
 
-use File::DataClass::Constants qw( LANG TRUE );
+use File::DataClass::Constants qw( FALSE LANG TRUE );
+use File::DataClass::Functions qw( is_hashref merge_attributes );
 use File::DataClass::Types     qw( Directory Str );
 use File::Gettext::Constants   qw( LOCALE_DIRS );
 use File::Gettext::ResultSource;
@@ -12,22 +13,31 @@ use Moo;
 
 extends 'File::DataClass::Schema';
 
-has 'catagory_name' => is => 'ro', isa => Str, default => 'LC_MESSAGES';
+has 'gettext_catagory' => is => 'ro', isa => Str, default => 'LC_MESSAGES';
 
-has 'language'      => is => 'rw', isa => Str, default => LANG;
+has 'language'         => is => 'rw', isa => Str, default => LANG;
 
-has 'localedir'     => is => 'ro', isa => Directory, coerce => TRUE,
-   default          => sub { LOCALE_DIRS->[ 0 ] };
+has 'localedir'        => is => 'ro', isa => Directory, coerce => TRUE,
+   default             => sub { LOCALE_DIRS->[ 0 ] };
 
 around 'BUILDARGS' => sub {
-   my ($orig, $class, @args) = @_; my $attr = $orig->( $class, @args );
+   my ($orig, $class, @args) = @_;
+
+   my $attr = is_hashref( $args[ 0 ] ) ? { %{ $args[ 0 ] } } : { @args };
+
+   if (my $builder = $attr->{builder}) {
+      my $config  = $builder->can( 'config' ) ? $builder->config : {};
+      my $cfgattr = [ qw( gettext_catagory language localedir ) ];
+
+      merge_attributes $attr, $config, $cfgattr;
+   }
 
    $attr->{result_source_class} = 'File::Gettext::ResultSource';
 
    # TODO: Deprecation
    my $lang = delete $attr->{lang}; $attr->{language} //= $lang;
 
-   return $attr;
+   return $orig->( $class, $attr );
 };
 
 sub BUILD {
@@ -63,7 +73,7 @@ Defines these attributes
 
 =over 3
 
-=item C<catagory_name>
+=item C<gettext_catagory>
 
 Subdirectory of C<localdir> that contains the F<mo> / F<po> files. Defaults
 to C<LC_MESSAGES>
