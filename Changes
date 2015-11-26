@@ -1,5 +1,6 @@
 Revision history for File::Gettext
 
+          - Refactored smoker exceptions to dump file
           - Better attribute and method naming
           - Schema attribute values collected from configuration
           - Switched Travis to a containerised build
