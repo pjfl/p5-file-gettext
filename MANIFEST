@@ -17,6 +17,7 @@ t/10test_script.t
 t/20with-language.t
 t/boilerplate.pm
 t/default.json
+t/exceptions.dd
 t/existing.mo
 t/existing.po
 t/locale/de/LC_MESSAGES/file1

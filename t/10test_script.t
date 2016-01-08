@@ -50,6 +50,16 @@ $data   = $schema->load;
 ok $data->{mo}->{January}->{msgstr}->[ 0 ] eq 'Januar', 'MO message lookup';
 ok $data->{mo}->{March}->{msgstr}->[ 0 ] eq 'März', 'MO charset decode';
 
+ok $schema->dump( { data => $data, path => $dumped } ), 'Does not dump MO';
+
+use File::Gettext::Constants qw( DIRECTORIES MAGIC_N );
+
+my @dirs = DIRECTORIES;
+
+is $dirs[ 0 ]->[ 0 ]->[ 3 ], 'locale', 'Default directories';
+
+is MAGIC_N, 2500072158, 'Magic number N';
+
 done_testing;
 
 # Cleanup

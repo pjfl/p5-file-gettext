@@ -1,5 +1,6 @@
 <div>
     <a href="https://travis-ci.org/pjfl/p5-file-gettext"><img src="https://travis-ci.org/pjfl/p5-file-gettext.svg?branch=master" alt="Travis CI Badge"></a>
+    <a href="https://roxsoft.co.uk/coverage/report/file-gettext/latest"><img src="https://roxsoft.co.uk/coverage/badge/file-gettext/latest" alt="Coverage Badge"></a>
     <a href="http://badge.fury.io/pl/File-Gettext"><img src="https://badge.fury.io/pl/File-Gettext.svg" alt="CPAN Badge"></a>
     <a href="http://cpants.cpanauthors.org/dist/File-Gettext"><img src="http://cpants.cpanauthors.org/dist/File-Gettext.png" alt="Kwalitee Badge"></a>
 </div>
@@ -10,7 +11,7 @@ File::Gettext - Read and write GNU Gettext po / mo files
 
 # Version
 
-This documents version v0.29.$Rev: 6 $ of [File::Gettext](https://metacpan.org/pod/File::Gettext)
+This documents version v0.29.$Rev: 8 $ of [File::Gettext](https://metacpan.org/pod/File::Gettext)
 
 # Synopsis
 
@@ -117,7 +118,7 @@ Peter Flanigan, `<pjfl@cpan.org>`
 
 # License and Copyright
 
-Copyright (c) 2015 Peter Flanigan. All rights reserved
+Copyright (c) 2016 Peter Flanigan. All rights reserved
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself. See [perlartistic](https://metacpan.org/pod/perlartistic)

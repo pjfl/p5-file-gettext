@@ -2,7 +2,7 @@ package File::Gettext;
 
 use 5.010001;
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.29.%d', q$Rev: 7 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.29.%d', q$Rev: 8 $ =~ /\d+/gmx );
 
 use English                    qw( -no_match_vars );
 use File::DataClass::Constants qw( EXCEPTION_CLASS FALSE NUL SPC TRUE );
@@ -168,9 +168,6 @@ sub object_file {
    return $dir->catfile( $lang, $self->gettext_catagory, $file.$extn );
 }
 
-# TODO: Deprecated
-*get_lang_file = \&object_file;
-
 sub set_path {
    my $self = shift; return $self->path( $self->object_file( @_ ) );
 }
@@ -184,6 +181,7 @@ __END__
 =begin html
 
 <a href="https://travis-ci.org/pjfl/p5-file-gettext"><img src="https://travis-ci.org/pjfl/p5-file-gettext.svg?branch=master" alt="Travis CI Badge"></a>
+<a href="https://roxsoft.co.uk/coverage/report/file-gettext/latest"><img src="https://roxsoft.co.uk/coverage/badge/file-gettext/latest" alt="Coverage Badge"></a>
 <a href="http://badge.fury.io/pl/File-Gettext"><img src="https://badge.fury.io/pl/File-Gettext.svg" alt="CPAN Badge"></a>
 <a href="http://cpants.cpanauthors.org/dist/File-Gettext"><img src="http://cpants.cpanauthors.org/dist/File-Gettext.png" alt="Kwalitee Badge"></a>
 
@@ -195,7 +193,7 @@ File::Gettext - Read and write GNU Gettext po / mo files
 
 =head1 Version
 
-This documents version v0.29.$Rev: 7 $ of L<File::Gettext>
+This documents version v0.29.$Rev: 8 $ of L<File::Gettext>
 
 =head1 Synopsis
 
@@ -311,7 +309,7 @@ Peter Flanigan, C<< <pjfl@cpan.org> >>
 
 =head1 License and Copyright
 
-Copyright (c) 2015 Peter Flanigan. All rights reserved
+Copyright (c) 2016 Peter Flanigan. All rights reserved
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself. See L<perlartistic>
