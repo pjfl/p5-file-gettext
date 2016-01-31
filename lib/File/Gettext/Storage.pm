@@ -11,16 +11,11 @@ use Try::Tiny;
 use Unexpected::Functions      qw( NothingUpdated Unspecified );
 use Moo;
 
-has 'gettext' => is => 'lazy', isa => Object, builder => sub {
-   File::Gettext->new( builder          => $_[ 0 ]->schema,
-                       cache_class      => $_[ 0 ]->cache_class,
-                       gettext_catagory => $_[ 0 ]->gettext_catagory,
-                       localedir        => $_[ 0 ]->localedir );
-};
+has 'gettext' => is => 'lazy', isa => Object,
+   builder    => sub { File::Gettext->new( builder => $_[ 0 ]->schema ) };
 
 has 'schema'  => is => 'ro',   isa => Object,  required => TRUE,
-   handles    => [ qw( cache cache_class gettext_catagory language localedir )],
-   weak_ref   => TRUE;
+   handles    => [ qw( cache language ) ],     weak_ref => TRUE;
 
 has 'storage' => is => 'ro',   isa => Object,  required => TRUE,
    handles    => [ qw( extn meta_pack meta_unpack
@@ -239,6 +234,8 @@ sub update {
 __END__
 
 =pod
+
+=encoding utf-8
 
 =head1 Name
 

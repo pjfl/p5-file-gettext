@@ -11,7 +11,7 @@ File::Gettext - Read and write GNU Gettext po / mo files
 
 # Version
 
-This documents version v0.29.$Rev: 8 $ of [File::Gettext](https://metacpan.org/pod/File::Gettext)
+This documents version v0.29.$Rev: 9 $ of [File::Gettext](https://metacpan.org/pod/File::Gettext)
 
 # Synopsis
 
@@ -62,6 +62,10 @@ Defines the following attributes;
     Either `po` or `mo`. Defaults to `po`
 
 # Subroutines/Methods
+
+## `BUILDARGS`
+
+Extracts default attribute values from the `builder` parameter
 
 ## `load`
 

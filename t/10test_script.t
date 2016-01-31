@@ -36,7 +36,7 @@ $diff = diff $orig, $dumped->pathname;
 ok !$diff, 'Load and dump roundtrips 2';
 
 $orig   = catfile( qw( t existing.po ) );
-$schema = File::Gettext->new( { path => $orig, tempdir => 't' } );
+$schema = File::Gettext->new( path => $orig, tempdir => 't' );
 $data   = $schema->load;
 
 ok $data->{po}->{January}->{msgstr}->[ 0 ] eq 'Januar', 'PO message lookup';

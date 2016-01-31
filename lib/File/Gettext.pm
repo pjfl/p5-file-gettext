@@ -2,11 +2,11 @@ package File::Gettext;
 
 use 5.010001;
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.29.%d', q$Rev: 8 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.29.%d', q$Rev: 9 $ =~ /\d+/gmx );
 
 use English                    qw( -no_match_vars );
 use File::DataClass::Constants qw( EXCEPTION_CLASS FALSE NUL SPC TRUE );
-use File::DataClass::Functions qw( throw );
+use File::DataClass::Functions qw( is_hashref merge_attributes throw );
 use File::DataClass::IO        qw( io );
 use File::DataClass::Types     qw( ArrayRef Directory HashRef Str Undef );
 use File::Gettext::Constants   qw( LOCALE_DIRS );
@@ -15,7 +15,7 @@ use Type::Utils                qw( as coerce declare from enum via );
 use Unexpected::Functions      qw( Unspecified );
 use Moo;
 
-extends 'File::DataClass::Schema';
+extends q(File::DataClass::Schema);
 
 # Private functions
 my $_build_localedir = sub {
@@ -99,6 +99,19 @@ my $_is_file_or_log_debug = sub {
 };
 
 # Construction
+around 'BUILDARGS' => sub {
+   my ($orig, $self, @args) = @_; my $attr = $orig->( $self, @args );
+
+   my $builder = $attr->{builder} or return $attr;
+   my $config  = $builder->can( 'config' ) ? $builder->config : {};
+   my $keys    = [ 'gettext_catagory', 'localedir' ];
+
+   merge_attributes $attr, $builder, $keys;
+   merge_attributes $attr, $config,  $keys;
+
+   return $attr;
+};
+
 around 'source' => sub {
    my ($orig, $self) = @_; return $orig->( $self, $self->source_name );
 };
@@ -178,6 +191,8 @@ __END__
 
 =pod
 
+=encoding utf-8
+
 =begin html
 
 <a href="https://travis-ci.org/pjfl/p5-file-gettext"><img src="https://travis-ci.org/pjfl/p5-file-gettext.svg?branch=master" alt="Travis CI Badge"></a>
@@ -193,7 +208,7 @@ File::Gettext - Read and write GNU Gettext po / mo files
 
 =head1 Version
 
-This documents version v0.29.$Rev: 8 $ of L<File::Gettext>
+This documents version v0.29.$Rev: 9 $ of L<File::Gettext>
 
 =head1 Synopsis
 
@@ -248,6 +263,10 @@ Either F<po> or F<mo>. Defaults to F<po>
 =back
 
 =head1 Subroutines/Methods
+
+=head2 C<BUILDARGS>
+
+Extracts default attribute values from the C<builder> parameter
 
 =head2 C<load>
 

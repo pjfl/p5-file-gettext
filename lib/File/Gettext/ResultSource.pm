@@ -5,7 +5,7 @@ use namespace::autoclean;
 use File::DataClass::Types qw( HashRef );
 use Moo;
 
-extends 'File::DataClass::ResultSource';
+extends q(File::DataClass::ResultSource);
 
 has 'language_dependent' => is => 'ro', isa => HashRef, default => sub { {} };
 
@@ -14,6 +14,8 @@ has 'language_dependent' => is => 'ro', isa => HashRef, default => sub { {} };
 __END__
 
 =pod
+
+=encoding utf-8
 
 =head1 Name
 

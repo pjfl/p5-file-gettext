@@ -10,7 +10,7 @@ use Moo;
 
 extension_map '+File::Gettext::Storage::MO' => '.mo';
 
-extends 'File::DataClass::Storage';
+extends q(File::DataClass::Storage);
 
 has '+extn' => default => '.mo';
 
@@ -136,6 +136,8 @@ sub write_to_file {
 __END__
 
 =pod
+
+=encoding utf-8
 
 =head1 Name
 

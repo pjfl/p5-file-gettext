@@ -40,6 +40,8 @@ __END__
 
 =pod
 
+=encoding utf-8
+
 =head1 Name
 
 File::Gettext::Constants - Definitions of constant values

@@ -11,7 +11,7 @@ use File::Gettext::Storage;
 use Scalar::Util               qw( blessed );
 use Moo;
 
-extends 'File::DataClass::Schema';
+extends q(File::DataClass::Schema);
 
 has 'gettext_catagory' => is => 'ro', isa => Str, default => 'LC_MESSAGES';
 
@@ -20,24 +20,20 @@ has 'language'         => is => 'rw', isa => Str, default => LANG;
 has 'localedir'        => is => 'ro', isa => Directory, coerce => TRUE,
    default             => sub { LOCALE_DIRS->[ 0 ] };
 
+has '+result_source_class' => default => 'File::Gettext::ResultSource';
+
 around 'BUILDARGS' => sub {
-   my ($orig, $class, @args) = @_;
+   my ($orig, $self, @args) = @_; my $attr = $orig->( $self, @args );
 
-   my $attr = is_hashref( $args[ 0 ] ) ? { %{ $args[ 0 ] } } : { @args };
+   # TODO: Deprecated
+   my $lang    = delete $attr->{lang}; $attr->{language} //= $lang;
+   my $builder = $attr->{builder} or return $attr;
+   my $config  = $builder->can( 'config' ) ? $builder->config : {};
+   my $keys    = [ qw( gettext_catagory language localedir ) ];
 
-   if (my $builder = $attr->{builder}) {
-      my $config  = $builder->can( 'config' ) ? $builder->config : {};
-      my $cfgattr = [ qw( gettext_catagory language localedir ) ];
+   merge_attributes $attr, $config, $keys;
 
-      merge_attributes $attr, $config, $cfgattr;
-   }
-
-   $attr->{result_source_class} = 'File::Gettext::ResultSource';
-
-   # TODO: Deprecation
-   my $lang = delete $attr->{lang}; $attr->{language} //= $lang;
-
-   return $orig->( $class, $attr );
+   return $attr;
 };
 
 sub BUILD {
@@ -56,6 +52,8 @@ sub BUILD {
 __END__
 
 =pod
+
+=encoding utf-8
 
 =head1 Name
 
@@ -85,6 +83,10 @@ The two character language code, e.g. C<de>.
 =item C<localedir>
 
 Path to the subtree containing the MO/PO files
+
+=item C<result_source_class>
+
+Overrides the default
 
 =back
 

@@ -11,7 +11,7 @@ use Moo;
 
 extension_map '+File::Gettext::Storage::PO' => '.po';
 
-extends 'File::DataClass::Storage';
+extends q(File::DataClass::Storage);
 
 has '+extn' => default => '.po';
 
@@ -414,6 +414,8 @@ sub make_key {
 __END__
 
 =pod
+
+=encoding utf-8
 
 =head1 Name
 
