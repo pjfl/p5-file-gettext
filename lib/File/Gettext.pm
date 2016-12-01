@@ -2,7 +2,7 @@ package File::Gettext;
 
 use 5.010001;
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.30.%d', q$Rev: 3 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.31.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use English                    qw( -no_match_vars );
 use File::DataClass::Constants qw( EXCEPTION_CLASS FALSE NUL SPC TRUE );
@@ -208,7 +208,7 @@ File::Gettext - Read and write GNU Gettext po / mo files
 
 =head1 Version
 
-This documents version v0.30.$Rev: 3 $ of L<File::Gettext>
+This documents version v0.31.$Rev: 1 $ of L<File::Gettext>
 
 =head1 Synopsis
 
