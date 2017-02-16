@@ -4,7 +4,7 @@ requires "File::DataClass" => "v0.67.0";
 requires "Moo" => "2.000001";
 requires "Try::Tiny" => "0.22";
 requires "Type::Tiny" => "1.000002";
-requires "Unexpected" => "v0.38.0";
+requires "Unexpected" => "v0.46.0";
 requires "namespace::autoclean" => "0.22";
 requires "perl" => "5.010001";
 

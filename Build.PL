@@ -21,7 +21,7 @@ my $prereqs  = {
     'Moo' => '2.000001',
     'Try::Tiny' => '0.22',
     'Type::Tiny' => '1.000002',
-    'Unexpected' => 'v0.38.0',
+    'Unexpected' => 'v0.46.0',
     'namespace::autoclean' => '0.22',
     'perl' => '5.010001'
   },
