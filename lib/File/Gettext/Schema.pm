@@ -2,12 +2,12 @@ package File::Gettext::Schema;
 
 use namespace::autoclean;
 
-use File::DataClass::Constants qw( FALSE LANG TRUE );
-use File::DataClass::Functions qw( is_hashref merge_attributes );
-use File::DataClass::Types     qw( Directory Str );
 use File::Gettext::Constants   qw( LOCALE_DIRS );
 use File::Gettext::ResultSource;
 use File::Gettext::Storage;
+use File::DataClass::Constants qw( FALSE LANG TRUE );
+use File::DataClass::Functions qw( merge_attributes );
+use File::DataClass::Types     qw( Directory Str );
 use Scalar::Util               qw( blessed );
 use Moo;
 
@@ -15,20 +15,24 @@ extends q(File::DataClass::Schema);
 
 has 'gettext_catagory' => is => 'ro', isa => Str, default => 'LC_MESSAGES';
 
-has 'language'         => is => 'rw', isa => Str, default => LANG;
+has 'language' => is => 'rw', isa => Str, default => LANG;
 
-has 'localedir'        => is => 'ro', isa => Directory, coerce => TRUE,
-   default             => sub { LOCALE_DIRS->[ 0 ] };
+has 'localedir' =>
+   is      => 'ro',
+   isa     => Directory,
+   coerce  => TRUE,
+   default => sub { LOCALE_DIRS->[0] };
 
 has '+result_source_class' => default => 'File::Gettext::ResultSource';
 
 around 'BUILDARGS' => sub {
-   my ($orig, $self, @args) = @_; my $attr = $orig->( $self, @args );
+   my ($orig, $self, @args) = @_;
 
+   my $attr    = $orig->( $self, @args );
    # TODO: Deprecated
    my $lang    = delete $attr->{lang}; $attr->{language} //= $lang;
    my $builder = $attr->{builder} or return $attr;
-   my $config  = $builder->can( 'config' ) ? $builder->config : {};
+   my $config  = $builder->can('config') ? $builder->config : {};
    my $keys    = [ qw( gettext_catagory language localedir ) ];
 
    merge_attributes $attr, $config, $keys;
@@ -42,7 +46,7 @@ sub BUILD {
    my $class   = 'File::Gettext::Storage';
    my $attr    = { schema => $self, storage => $storage };
 
-   blessed $storage ne $class and $self->storage( $class->new( $attr ) );
+   $self->storage($class->new($attr)) if blessed $storage ne $class;
 
    return;
 }

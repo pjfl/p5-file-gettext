@@ -1,5 +1,7 @@
 Revision history for File::Gettext
 
+          - Refactored coding style
+
 0.33.1    2017-03-01 21:50:53
           - Bumped dependency versions
 

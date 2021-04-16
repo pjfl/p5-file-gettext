@@ -19,6 +19,7 @@ my $prereqs  = {
     'Encode' => '2.67',
     'File::DataClass' => 'v0.67.0',
     'Moo' => '2.000001',
+    'Ref::Util' => '0.203',
     'Try::Tiny' => '0.22',
     'Type::Tiny' => '1.000002',
     'Unexpected' => 'v0.46.0',

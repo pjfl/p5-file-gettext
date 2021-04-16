@@ -2,14 +2,14 @@ package File::Gettext;
 
 use 5.010001;
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.33.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.33.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
+use File::Gettext::Constants   qw( LOCALE_DIRS );
 use English                    qw( -no_match_vars );
 use File::DataClass::Constants qw( EXCEPTION_CLASS FALSE NUL SPC TRUE );
-use File::DataClass::Functions qw( is_hashref merge_attributes throw );
+use File::DataClass::Functions qw( merge_attributes throw );
 use File::DataClass::IO        qw( io );
 use File::DataClass::Types     qw( ArrayRef Directory HashRef Str Undef );
-use File::Gettext::Constants   qw( LOCALE_DIRS );
 use File::Spec::Functions      qw( tmpdir );
 use Type::Utils                qw( as coerce declare from enum via );
 use Unexpected::Functions      qw( Unspecified );
@@ -17,94 +17,92 @@ use Moo;
 
 extends q(File::DataClass::Schema);
 
-# Private functions
-my $_build_localedir = sub {
-   my $dir = shift; $dir and $dir = io( $dir ) and $dir->is_dir and return $dir;
-
-   for $dir (map { io $_ } @{ LOCALE_DIRS() }) {
-      $dir->exists and $dir->is_dir and return $dir;
-   }
-
-   return io tmpdir();
-};
-
-my $LocaleDir  = declare as Directory;
+my $LocaleDir = declare as Directory;
 
 coerce $LocaleDir,
-   from ArrayRef, via { $_build_localedir->( $_ ) },
-   from Str,      via { $_build_localedir->( $_ ) },
-   from Undef,    via { $_build_localedir->( $_ ) };
+   from ArrayRef, via { _build_localedir($_) },
+   from Str,      via { _build_localedir($_) },
+   from Undef,    via { _build_localedir($_) };
 
 my $SourceType = enum 'SourceType' => [ 'mo', 'po' ];
 
 # Public attributes
-has 'charset'           => is => 'ro', isa => Str, default => 'iso-8859-1';
+has 'charset' => is => 'ro', isa => Str, default => 'iso-8859-1';
 
-has 'default_po_header' => is => 'ro', isa => HashRef,
-   default              => sub { {
-      appname           => 'Your_Application',
-      company           => 'ExampleCom',
-      email             => '<translators@example.com>',
-      lang              => 'en',
-      team              => 'Translators',
-      translator        => 'Athena', } };
+has 'default_po_header' =>
+   is      => 'ro',
+   isa     => HashRef,
+   default => sub {
+      return {
+         appname    => 'Your_Application',
+         company    => 'ExampleCom',
+         email      => '<translators@example.com>',
+         lang       => 'en',
+         team       => 'Translators',
+         translator => 'Athena',
+      };
+   };
 
-has 'gettext_catagory'  => is => 'ro', isa => Str, default => 'LC_MESSAGES';
+has 'gettext_catagory' => is => 'ro', isa => Str, default => 'LC_MESSAGES';
 
-has 'header_key_table'  => is => 'ro', isa => HashRef,
-   default              => sub { {
-      project_id_version        => [ 0,  'Project-Id-Version'        ],
-      report_msgid_bugs_to      => [ 1,  'Report-Msgid-Bugs-To'      ],
-      pot_creation_date         => [ 2,  'POT-Creation-Date'         ],
-      po_revision_date          => [ 3,  'PO-Revision-Date'          ],
-      last_translator           => [ 4,  'Last-Translator'           ],
-      language_team             => [ 5,  'Language-Team'             ],
-      language                  => [ 6,  'Language'                  ],
-      mime_version              => [ 7,  'MIME-Version'              ],
-      content_type              => [ 8,  'Content-Type'              ],
-      content_transfer_encoding => [ 9,  'Content-Transfer-Encoding' ],
-      plural_forms              => [ 10, 'Plural-Forms'              ], } };
+has 'header_key_table' =>
+   is      => 'ro',
+   isa     => HashRef,
+   default => sub {
+      return {
+         project_id_version        => [ 0,  'Project-Id-Version'        ],
+         report_msgid_bugs_to      => [ 1,  'Report-Msgid-Bugs-To'      ],
+         pot_creation_date         => [ 2,  'POT-Creation-Date'         ],
+         po_revision_date          => [ 3,  'PO-Revision-Date'          ],
+         last_translator           => [ 4,  'Last-Translator'           ],
+         language_team             => [ 5,  'Language-Team'             ],
+         language                  => [ 6,  'Language'                  ],
+         mime_version              => [ 7,  'MIME-Version'              ],
+         content_type              => [ 8,  'Content-Type'              ],
+         content_transfer_encoding => [ 9,  'Content-Transfer-Encoding' ],
+         plural_forms              => [ 10, 'Plural-Forms'              ],
+      };
+   };
 
-has 'localedir'      => is => 'ro', isa => $LocaleDir, coerce => TRUE,
-   default           => NUL;
+has 'localedir' =>
+   is      => 'ro',
+   isa     => $LocaleDir,
+   coerce  => TRUE,
+   default => NUL;
 
 has '+result_source_attributes' =>
-   default           => sub { {
-      mo             => {
-         attributes  => [ qw( msgid_plural msgstr ) ],
-         defaults    => { msgstr => [], }, },
-      po             => {
-         attributes  =>
-            [ qw( translator_comment extracted_comment reference flags
-                  previous msgctxt msgid msgid_plural msgstr ) ],
-         defaults    => { 'flags' => [], 'msgstr' => [], },
-         label_attr  => 'labels',
-      }, } };
+   default => sub {
+      return {
+         mo => {
+            attributes => [ qw( msgid_plural msgstr ) ],
+            defaults   => { msgstr => [], },
+         },
+         po => {
+            attributes =>
+               [ qw( translator_comment extracted_comment reference flags
+                     previous msgctxt msgid msgid_plural msgstr ) ],
+            defaults   => { 'flags' => [], 'msgstr' => [], },
+            label_attr => 'labels',
+         },
+      };
+   };
 
 has '+storage_class' => default => '+File::Gettext::Storage::PO';
 
-has 'source_name'    => is => 'ro', isa => $SourceType,
-   default           => 'po', trigger => TRUE;
-
-# Private methods
-my $_is_file_or_log_debug = sub {
-   my ($self, $path) = @_;
-
-   $path->exists  or ($self->log->debug( 'Path '.$path->pathname.' not found' )
-                      and return FALSE);
-   $path->is_file or ($self->log->debug( 'Path '.$path->pathname.' not a file' )
-                      and return FALSE);
-
-   return TRUE;
-};
+has 'source_name' =>
+   is      => 'ro',
+   isa     => $SourceType,
+   default => 'po',
+   trigger => TRUE;
 
 # Construction
 around 'BUILDARGS' => sub {
-   my ($orig, $self, @args) = @_; my $attr = $orig->( $self, @args );
+   my ($orig, $self, @args) = @_;
 
+   my $attr    = $orig->($self, @args);
    my $builder = $attr->{builder} or return $attr;
-   my $config  = $builder->can( 'config' ) ? $builder->config : {};
-   my $keys    = [ 'gettext_catagory', 'localedir' ];
+   my $config  = $builder->can('config') ? $builder->config : {};
+   my $keys    = ['gettext_catagory', 'localedir'];
 
    merge_attributes $attr, $builder, $keys;
    merge_attributes $attr, $config,  $keys;
@@ -113,22 +111,26 @@ around 'BUILDARGS' => sub {
 };
 
 around 'source' => sub {
-   my ($orig, $self) = @_; return $orig->( $self, $self->source_name );
+   my ($orig, $self) = @_;
+
+   return $orig->($self, $self->source_name);
 };
 
 around 'resultset' => sub {
-   my ($orig, $self) = @_; return $orig->( $self, $self->source_name );
+   my ($orig, $self) = @_;
+
+   return $orig->($self, $self->source_name);
 };
 
 around 'load' => sub {
    my ($orig, $self, $lang, @files) = @_;
 
-   my @paths = grep { $self->$_is_file_or_log_debug( $_ ) }
-               map  { $self->object_file( $lang, $_ ) } @files;
+   my @paths = grep { $self->_is_file_or_log_debug($_) }
+               map  { $self->object_file($lang, $_) } @files;
 
-   not $paths[ 0 ] and not $self->path and return {};
+   return {} if !$paths[0] && !$self->path;
 
-   my $data  = $orig->( $self, @paths );
+   my $data = $orig->($self, @paths);
    my $po_header = exists $data->{po_header}
                  ? $data->{po_header}->{msgstr} // {} : {};
    my $plural_func;
@@ -149,7 +151,7 @@ around 'load' => sub {
       # a Safe compartment. The above substitutions should have destroyed
       # all evil code. Corrections are welcome!
       $plural_func = eval $code; ## no critic
-      $EVAL_ERROR and $plural_func = undef;
+      $plural_func = undef if $EVAL_ERROR;
    }
 
    # Default is Germanic plural (which is incorrect for French).
@@ -161,8 +163,8 @@ around 'load' => sub {
 sub _trigger_source_name {
    my ($self, $source) = @_;
 
-   $source eq 'mo' and $self->storage_class( '+File::Gettext::Storage::MO' );
-   $source eq 'po' and $self->storage_class( '+File::Gettext::Storage::PO' );
+   $self->storage_class('+File::Gettext::Storage::MO') if $source eq 'mo';
+   $self->storage_class('+File::Gettext::Storage::PO') if $source eq 'po';
 
    return;
 }
@@ -171,18 +173,50 @@ sub _trigger_source_name {
 sub object_file {
    my ($self, $lang, $file) = @_;
 
-   $lang or throw Unspecified, [ 'language' ];
-   $file or throw Unspecified, [ 'language file name' ];
+   throw Unspecified, ['language'] unless $lang;
+   throw Unspecified, ['language file name'] unless $file;
 
-   my $dir = $self->localedir; my $extn = $self->storage->extn;
+   my $dir  = $self->localedir;
+   my $extn = $self->storage->extn;
 
-   length $self->gettext_catagory or return $dir->catfile( $lang, $file.$extn );
+   return $dir->catfile($lang, $file.$extn)
+      unless length $self->gettext_catagory;
 
-   return $dir->catfile( $lang, $self->gettext_catagory, $file.$extn );
+   return $dir->catfile($lang, $self->gettext_catagory, $file.$extn);
 }
 
 sub set_path {
-   my $self = shift; return $self->path( $self->object_file( @_ ) );
+   my $self = shift; return $self->path($self->object_file(@_));
+}
+
+# Private methods
+sub _is_file_or_log_debug {
+   my ($self, $path) = @_;
+
+   unless ($path->exists) {
+      $self->log->debug('Path '.$path->pathname.' not found');
+      return FALSE;
+   }
+
+   unless ($path->is_file) {
+      $self->log->debug('Path '.$path->pathname.' not a file');
+      return FALSE;
+   }
+
+   return TRUE;
+}
+
+# Private functions
+sub _build_localedir {
+   my $dir = shift;
+
+   return $dir if $dir && ($dir = io($dir)) && $dir->is_dir;
+
+   for $dir (map { io $_ } @{ LOCALE_DIRS() }) {
+      return $dir if $dir->exists && $dir->is_dir;
+   }
+
+   return io tmpdir();
 }
 
 1;
@@ -208,7 +242,7 @@ File::Gettext - Read and write GNU Gettext po / mo files
 
 =head1 Version
 
-This documents version v0.33.$Rev: 1 $ of L<File::Gettext>
+This documents version v0.33.$Rev: 2 $ of L<File::Gettext>
 
 =head1 Synopsis
 
